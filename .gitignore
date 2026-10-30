@@ -1,0 +1,24 @@
+# dependencies & builds
+node_modules/
+dist/
+dist-single/
+
+# local / editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# assessment brief (not ours to publish)
+*.pdf
+
+# submission zip
+*.zip
+
+# screenshots from local verification runs
+.screenshots/
+
+# local AI tooling (installed agent skills); not part of the deliverable
+.claude/
+skills-lock.json

@@ -1,0 +1,99 @@
+@import 'tailwindcss';
+
+/*
+  Design tokens for Astera Studio.
+
+  Principle: color means status. The interface is neutral (paper, ink, lines);
+  color only appears when it carries meaning (a pipeline's state, a missed target,
+  stale data). Tailwind's default palette is switched off so every color in the
+  app has to come from this list.
+*/
+@theme {
+  --color-*: initial;
+  --color-white: #ffffff;
+
+  /* Neutrals */
+  --color-paper: #f4f6f7;        /* app background, cool, not cream */
+  --color-surface: #ffffff;      /* panels, sheets, chart areas */
+  --color-sunken: #eceff1;       /* inputs, segmented controls, quiet fills */
+  --color-ink: #16202a;          /* primary text, primary buttons */
+  --color-ink-muted: #56626e;    /* secondary text (AA on paper and surface) */
+  --color-ink-faint: #8b959f;    /* decorative only: icons, disabled, never body text */
+  --color-line: #dde2e6;         /* hairlines and dividers */
+  --color-line-strong: #c3cbd2;  /* control borders, the pipe connector */
+
+  /* Status: the only saturated colors in the app */
+  --color-ok: #1d7a4c;           /* succeeded */
+  --color-ok-soft: #e3f2ea;
+  --color-run: #1f5bb8;          /* running */
+  --color-run-soft: #e6eefa;
+  --color-fail: #b83228;         /* failed, missed target */
+  --color-fail-soft: #fbe9e7;
+  --color-warn: #8f5b00;         /* stale data */
+  --color-warn-soft: #fcf1d9;
+  /* "Scheduled" is deliberately not colored: nothing has happened yet. It uses ink-muted + sunken. */
+
+  /* Chart series: slate, so status red stays the loudest thing on screen */
+  --color-series: #3b5266;
+  --color-series-muted: #b7c1ca;
+
+  /* Type */
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Motion: one curve for UI responses (strong ease-out) */
+  --ease-out-ui: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@layer base {
+  html {
+    /* Stops pull-to-refresh and scroll chaining from fighting the app */
+    overscroll-behavior-y: none;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-size: 15px;
+    line-height: 1.5;
+    /* Real tabular figures from Plex, so numbers in KPIs and tables line up */
+    font-feature-settings: 'tnum' 1;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Controls: no double-tap zoom delay, no text selection on long-press */
+  button,
+  [role='tab'],
+  a {
+    touch-action: manipulation;
+  }
+  button,
+  [role='tab'] {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  /* 16px minimum stops iOS Safari zooming into a field on focus */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  /* Keyboard focus is always visible; mouse/touch focus is not */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
