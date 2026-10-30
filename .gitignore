@@ -22,3 +22,6 @@ Thumbs.db
 # local AI tooling (installed agent skills); not part of the deliverable
 .claude/
 skills-lock.json
+
+# private planning notes (kept local)
+PLAN.md
