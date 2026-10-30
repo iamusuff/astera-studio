@@ -2,9 +2,11 @@ import { NavLink } from 'react-router'
 
 import Logo from '../brand/Logo.jsx'
 import { navItems } from './navItems.js'
+import NavBadge, { useFailedCount } from './NavBadge.jsx'
 
 // Desktop only (>= 1280px): full labels, workspace and signed-in user.
 export default function Sidebar() {
+  const failed = useFailedCount()
   return (
     <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-line xl:flex">
       <div className="px-5 pt-6 pb-8">
@@ -12,7 +14,7 @@ export default function Sidebar() {
       </div>
 
       <nav aria-label="Main" className="flex flex-col gap-0.5 px-3">
-        {navItems.map(({ to, label, icon: Icon }) => (
+        {navItems.map(({ to, label, icon: Icon, showFailedCount }) => (
           <NavLink
             key={to}
             to={to}
@@ -26,6 +28,7 @@ export default function Sidebar() {
           >
             <Icon className="size-[18px]" strokeWidth={1.75} aria-hidden="true" />
             {label}
+            {showFailedCount && <NavBadge count={failed} className="ml-auto" />}
           </NavLink>
         ))}
       </nav>

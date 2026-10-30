@@ -2,16 +2,18 @@ import { NavLink } from 'react-router'
 
 import { LogoMark } from '../brand/Logo.jsx'
 import { navItems } from './navItems.js'
+import NavBadge, { useFailedCount } from './NavBadge.jsx'
 
 // iPad (768-1279px): a slim rail. Labels stay under the icons because
 // icon-only navigation makes people guess, and there is no hover to explain it.
 export default function IconRail() {
+  const failed = useFailedCount()
   return (
     <aside className="sticky top-0 hidden h-dvh w-[84px] shrink-0 flex-col items-center border-r border-line pt-[max(1.25rem,env(safe-area-inset-top,0px))] md:flex xl:hidden">
       <LogoMark />
 
       <nav aria-label="Main" className="mt-8 flex flex-col gap-1">
-        {navItems.map(({ to, label, icon: Icon }) => (
+        {navItems.map(({ to, label, icon: Icon, showFailedCount }) => (
           <NavLink
             key={to}
             to={to}
@@ -21,7 +23,10 @@ export default function IconRail() {
               }`
             }
           >
-            <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" />
+            <span className="relative">
+              <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" />
+              {showFailedCount && <NavBadge count={failed} className="absolute -top-1.5 -right-3" />}
+            </span>
             {label}
           </NavLink>
         ))}

@@ -5,5 +5,5 @@ import { LayoutDashboard, MessageSquare, Workflow } from 'lucide-react'
 export const navItems = [
   { to: '/chat', label: 'Chat', icon: MessageSquare },
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/pipelines', label: 'Pipelines', icon: Workflow },
+  { to: '/pipelines', label: 'Pipelines', icon: Workflow, showFailedCount: true },
 ]
