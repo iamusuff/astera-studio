@@ -14,7 +14,7 @@ export function notify({ title, description, action, secondary, duration = 6000 
     (id) => (
       <div
         role="status"
-        className="flex w-full items-start gap-3 rounded-xl bg-ink py-3 pr-2 pl-4 text-white shadow-[0_8px_24px_rgb(22_32_42/0.28)] md:w-[360px]"
+        className="flex w-full items-start gap-3 rounded-xl bg-ink py-3 pr-2 pl-4 text-white shadow-[0_8px_24px_rgb(22_32_42/0.28)] md:w-[380px]"
       >
         <div className="min-w-0 flex-1 py-1">
           <p className="text-sm font-medium">{title}</p>

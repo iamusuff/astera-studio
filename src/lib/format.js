@@ -7,12 +7,6 @@ const currencyFull = new Intl.NumberFormat('en-US', {
   currency: 'USD',
   maximumFractionDigits: 0,
 })
-const currencyCompact = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  notation: 'compact',
-  maximumFractionDigits: 2,
-})
 const number = new Intl.NumberFormat('en-US')
 const time = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' })
 const dayTime = new Intl.DateTimeFormat('en-US', {
@@ -23,7 +17,15 @@ const dayTime = new Intl.DateTimeFormat('en-US', {
 })
 
 export const formatCurrency = (value) => currencyFull.format(value)
-export const formatCurrencyCompact = (value) => currencyCompact.format(value) // $4.18M
+// Short money for summaries, axes and KPIs. Fixed decimals so numbers side by side
+// read the same way: $4.18M, $2.60M, $973.6K, $840
+export function formatCurrencyCompact(value) {
+  const sign = value < 0 ? '−' : ''
+  const abs = Math.abs(value)
+  if (abs >= 1e6) return `${sign}$${(abs / 1e6).toFixed(2)}M`
+  if (abs >= 1e3) return `${sign}$${(abs / 1e3).toFixed(1)}K`
+  return `${sign}$${Math.round(abs)}`
+}
 export const formatNumber = (value) => number.format(value)
 
 // 0.0412 -> "4.1%"; signed adds a + for growth

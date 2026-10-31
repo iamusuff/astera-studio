@@ -7,7 +7,7 @@ import DashboardScreen from './features/dashboard/DashboardScreen.jsx'
 import PipelinesScreen from './features/pipelines/PipelinesScreen.jsx'
 import PipelineDetailScreen from './features/pipelines/PipelineDetailScreen.jsx'
 import { AppStoreProvider } from './state/AppStore.jsx'
-import { useIsPhone } from './hooks/useMediaQuery.js'
+import { useIsDesktop } from './hooks/useMediaQuery.js'
 
 // HashRouter (#/chat, #/dashboard, ...) is used instead of normal URLs because
 // there is no server: hash URLs work on GitHub Pages and when index.html is
@@ -35,16 +35,16 @@ export default function App() {
 }
 
 /*
-  One toaster for the whole app. On phones toasts come from the top, like iOS
-  notifications, because the bottom of a phone screen is already busy with the
-  tab bar, bottom sheets and the chat input. On iPad and desktop: bottom right.
+  One toaster for the whole app. On phones and iPads toasts come from the top,
+  like iOS notifications, because the bottom of a touch screen is already busy
+  with the tab bar, bottom sheets and the chat input. On desktop: bottom right.
 */
 function AppToaster() {
-  const isPhone = useIsPhone()
+  const isDesktop = useIsDesktop()
   return (
     <Toaster
-      position={isPhone ? 'top-center' : 'bottom-right'}
-      offset={{ bottom: '24px', right: '24px' }}
+      position={isDesktop ? 'bottom-right' : 'top-center'}
+      offset={{ top: '16px', bottom: '24px', right: '24px' }}
       mobileOffset={{ top: 'calc(env(safe-area-inset-top, 0px) + 8px)', left: '12px', right: '12px' }}
       gap={8}
     />

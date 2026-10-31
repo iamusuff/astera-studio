@@ -17,6 +17,9 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tailwindcss(), ...(single ? [viteSingleFile()] : [])],
     build: {
       outDir: single ? 'dist-single' : 'dist',
+      // The chart library makes one ~600 KB bundle. Splitting it would not help:
+      // the zip build inlines everything into one file anyway, and there is no server.
+      chunkSizeWarningLimit: 800,
     },
   }
 })

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useRef } from 'react'
 
+import { matchQuestion } from '../data/chat.js'
 import { PIPELINES } from '../data/pipelines.js'
 import { now } from '../lib/clock.js'
 import * as pipelineOps from './pipelineReducer.js'
@@ -21,10 +22,12 @@ const initialState = {
   pipelines: PIPELINES,
   pins: [], // [{ id, answerId, pinnedAt }]
   filters: { period: 'q3', region: 'all' },
+  chat: [], // [{ id, question, answerId, status: 'thinking' | 'done' }]
   undo: null, // { id, pipelines, pins }
 }
 
 const RUN_TICK_MS = 1100 // a demo run takes a few seconds, not a few minutes
+const THINKING_MS = 1200 // long enough to read "Reading the Regional sales pipeline"
 
 function withUndo(state, undoId) {
   return { id: undoId, pipelines: state.pipelines, pins: state.pins }
@@ -78,6 +81,18 @@ function reducer(state, action) {
 
     case 'RUN_TICK':
       return mapPipeline(state, action.pipelineId, (p) => pipelineOps.tickRun(p, action))
+
+    case 'CHAT_ASK':
+      return {
+        ...state,
+        chat: [...state.chat, { id: action.id, question: action.question, answerId: action.answerId, status: 'thinking' }],
+      }
+
+    case 'CHAT_ANSWER':
+      return { ...state, chat: state.chat.map((m) => (m.id === action.id ? { ...m, status: 'done' } : m)) }
+
+    case 'CHAT_CLEAR':
+      return { ...state, chat: [] }
 
     case 'UNDO':
       if (state.undo?.id !== action.undoId) return state
@@ -156,6 +171,16 @@ export function AppStoreProvider({ children }) {
       },
 
       undo: (undoId) => dispatch({ type: 'UNDO', undoId }),
+
+      // answerId is known when a suggestion chip is tapped; typed questions are matched
+      // by keywords, and null means "no answer in this demo".
+      ask: (question, answerId = matchQuestion(question)) => {
+        const id = newId('msg')
+        dispatch({ type: 'CHAT_ASK', id, question, answerId })
+        setTimeout(() => dispatch({ type: 'CHAT_ANSWER', id }), THINKING_MS)
+        return id
+      },
+      clearChat: () => dispatch({ type: 'CHAT_CLEAR' }),
     }),
     [],
   )
