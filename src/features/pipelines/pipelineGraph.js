@@ -1,15 +1,4 @@
-import {
-  Calculator,
-  Database,
-  Eraser,
-  FileSpreadsheet,
-  FileText,
-  Funnel,
-  GitMerge,
-  LayoutDashboard,
-  Plug,
-  Sigma,
-} from 'lucide-react'
+import { Calculator, Database, Eraser, FileCsv, FileXls, Funnel, GitMerge, Plug, Sigma, SquaresFour } from '@phosphor-icons/react'
 
 /*
   Layout helpers for drawing a pipeline without a free-form canvas.
@@ -100,8 +89,8 @@ export function edgeState(fromStep) {
 
 export function stepIcon(step) {
   if (step.kind === 'source') {
-    if (step.target.endsWith('.xlsx')) return FileSpreadsheet
-    if (step.target.endsWith('.csv')) return FileText
+    if (step.target.endsWith('.xlsx')) return FileXls
+    if (step.target.endsWith('.csv')) return FileCsv
     if (/api/i.test(step.target)) return Plug
     return Database
   }
@@ -111,7 +100,7 @@ export function stepIcon(step) {
     join: GitMerge,
     aggregate: Sigma,
     calculate: Calculator,
-    publish: LayoutDashboard,
+    publish: SquaresFour,
   }[step.kind]
 }
 

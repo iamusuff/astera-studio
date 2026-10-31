@@ -1,4 +1,4 @@
-import { ChevronDown, Play, RotateCw } from 'lucide-react'
+import { ArrowClockwise, CaretDown, Play } from '@phosphor-icons/react'
 import { useEffect, useRef } from 'react'
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
 
@@ -60,11 +60,11 @@ export default function PipelineDetailScreen() {
 
         {isDesktop ? (
           <>
-            <section aria-label="Pipeline steps" className="rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)]">
+            <section aria-label="Pipeline steps" className="rounded-[var(--radius-card)] glass-card">
               <FlowDiagram pipeline={pipeline} selectedId={selected?.id} onSelect={select} />
             </section>
             <div className="grid grid-cols-[minmax(0,1fr)_22rem] items-start gap-6">
-              <section aria-label="Selected step" className="rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)] p-5">
+              <section aria-label="Selected step" className="rounded-[var(--radius-card)] glass-card p-5">
                 {inspector}
               </section>
               <aside aria-label="Runs and schedule" className="space-y-6">
@@ -85,7 +85,7 @@ export default function PipelineDetailScreen() {
             {!isPhone && (
               <section
                 aria-label="Selected step"
-                className="sticky top-16 max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)] p-5"
+                className="sticky top-16 max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-[var(--radius-card)] glass-card p-5"
               >
                 {inspector}
               </section>
@@ -118,7 +118,7 @@ function PipelineHeader({ pipeline }) {
   if (running) {
     action = (
       <Button variant="secondary" disabled>
-        <RotateCw className="size-4 motion-safe:animate-spin" aria-hidden="true" />
+        <ArrowClockwise className="size-4 motion-safe:animate-spin" aria-hidden="true" />
         Running…
       </Button>
     )
@@ -127,7 +127,7 @@ function PipelineHeader({ pipeline }) {
   } else if (ready) {
     action = (
       <Button variant="primary" onClick={() => rerun(pipeline.id, ready.id)}>
-        <RotateCw className="size-4" aria-hidden="true" />
+        <ArrowClockwise className="size-4" aria-hidden="true" />
         Re-run from {ready.name}
       </Button>
     )
@@ -186,7 +186,7 @@ function PipelineSettings({ pipeline }) {
   }
 
   return (
-    <section aria-labelledby="settings-heading" className="rounded-[var(--radius-group)] bg-surface shadow-[var(--shadow-card)] p-4">
+    <section aria-labelledby="settings-heading" className="rounded-[var(--radius-group)] glass-card p-4">
       <h2 id="settings-heading" className="text-sm font-semibold">
         Schedule and use
       </h2>
@@ -210,7 +210,7 @@ function PipelineSettings({ pipeline }) {
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
+                <CaretDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
               </div>
             ) : (
               pipeline.schedule.label

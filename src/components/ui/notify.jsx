@@ -1,4 +1,4 @@
-import { CircleCheck, X } from 'lucide-react'
+import { CheckCircle, X } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
 /*
@@ -13,7 +13,7 @@ export function notify({ title, description, action, secondary, success = false,
   return toast.custom(
     (id) => (
       <div role="status" className="glass-float flex w-full items-center gap-3 rounded-[22px] py-2.5 pr-2 pl-4 text-ink md:w-[390px]">
-        {success && <CircleCheck className="size-5 shrink-0 text-ok-dot" strokeWidth={2.25} aria-hidden="true" />}
+        {success && <CheckCircle className="size-5 shrink-0 text-ok-dot" aria-hidden="true" />}
         <div className="min-w-0 flex-1 py-1">
           <p className="text-[15px] font-semibold">{title}</p>
           {description && <p className="mt-0.5 text-[13px] text-ink-muted">{description}</p>}

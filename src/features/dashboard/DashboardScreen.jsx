@@ -18,6 +18,7 @@ import FilterBar from './FilterBar.jsx'
 import KpiStrip from './KpiStrip.jsx'
 import PinnedAnswers from './PinnedAnswers.jsx'
 import SourcesStrip from './SourcesStrip.jsx'
+import Reveal from '../../components/ui/Reveal.jsx'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle.js'
 
 /*
@@ -47,19 +48,32 @@ export default function DashboardScreen() {
           <StaleWarning key={p.id} pipeline={p} affected="revenue, orders and order value show" />
         ))}
 
-        <KpiStrip period={filters.period} region={filters.region} />
-        <SourcesStrip />
+        <Reveal order={0}>
+          <KpiStrip period={filters.period} region={filters.region} />
+        </Reveal>
+        <Reveal order={1}>
+          <SourcesStrip />
+        </Reveal>
 
         <section aria-label="Charts" className="grid gap-4 lg:grid-cols-2">
-          <ChartPanel
-            chart={regionChart(filters)}
-            onSelect={openRegion}
-            staleNotice={false}
-            footer={<DrillDownLinks />}
-          />
-          <ChartPanel chart={monthlyChart(filters)} staleNotice={false} />
-          <ChartPanel chart={returnsChart(filters)} />
-          <ChartPanel chart={stockChart()} />
+          <Reveal order={2} className="flex">
+            <ChartPanel
+              chart={regionChart(filters)}
+              onSelect={openRegion}
+              staleNotice={false}
+              footer={<DrillDownLinks />}
+              className="flex-1"
+            />
+          </Reveal>
+          <Reveal order={3} className="flex">
+            <ChartPanel chart={monthlyChart(filters)} staleNotice={false} className="flex-1" />
+          </Reveal>
+          <Reveal order={4} className="flex">
+            <ChartPanel chart={returnsChart(filters)} className="flex-1" />
+          </Reveal>
+          <Reveal order={5} className="flex">
+            <ChartPanel chart={stockChart()} className="flex-1" />
+          </Reveal>
         </section>
 
         <PinnedAnswers />

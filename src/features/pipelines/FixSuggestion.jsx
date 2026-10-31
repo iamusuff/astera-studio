@@ -1,4 +1,4 @@
-import { Wrench } from 'lucide-react'
+import { Wrench } from '@phosphor-icons/react'
 import { useState } from 'react'
 
 import Button from '../../components/ui/Button.jsx'
@@ -44,9 +44,9 @@ export default function FixSuggestion({ pipeline, step }) {
         </details>
       </section>
 
-      <section className="rounded-2xl bg-paper p-4">
+      <section className="rounded-2xl inset-fill p-4">
         <p className="flex items-center gap-2 text-sm text-ink-muted">
-          <Wrench className="size-4" strokeWidth={1.75} aria-hidden="true" />
+          <Wrench className="size-4" aria-hidden="true" />
           Suggested fix
         </p>
         <h3 className="mt-1.5 font-semibold">{suggestion.title}</h3>

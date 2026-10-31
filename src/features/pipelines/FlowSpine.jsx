@@ -93,7 +93,7 @@ export default function FlowSpine({ pipeline, selectedId, onSelect }) {
 
 const NODE = {
   succeeded: 'border-line-strong bg-surface text-ink',
-  running: 'border-run bg-run-soft text-run',
+  running: 'border-run bg-run-soft text-run motion-safe:animate-[breathe_2.4s_ease-in-out_infinite]',
   failed: 'border-fail bg-fail-soft text-fail',
   waiting: 'border-dashed border-line-strong bg-paper text-ink-faint',
 }
@@ -111,9 +111,9 @@ function StepCard({ step, index, total, selected, onSelect, sides, selectedId })
   const failed = step.status === 'failed'
   return (
     <div
-      className={`my-1 rounded-2xl border bg-surface shadow-[var(--shadow-card)] transition-[border-color,box-shadow] ${
+      className={`my-1 rounded-2xl border glass-card transition-[border-color,box-shadow] ${
         selected ? 'border-tint ring-4 ring-tint-soft' : failed ? 'border-fail-dot/50' : 'border-transparent'
-      } ${step.status === 'waiting' ? 'border-dashed !border-line-strong bg-paper shadow-none' : ''}`}
+      } ${step.status === 'waiting' ? 'border-dashed !border-line-strong !bg-transparent !shadow-none !backdrop-blur-none before:hidden' : ''}`}
     >
       <button
         type="button"

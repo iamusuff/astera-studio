@@ -1,4 +1,4 @@
-import { TriangleAlert } from 'lucide-react'
+import { Warning } from '@phosphor-icons/react'
 
 import { useNow } from '../../hooks/useNow.js'
 import { formatExact, formatRelative } from '../../lib/format.js'
@@ -12,7 +12,7 @@ export default function Freshness({ at, stale = false, prefix = 'Updated', class
   useNow()
   return (
     <span className={`inline-flex items-center gap-1.5 text-[13px] ${stale ? 'text-warn' : 'text-ink-muted'} ${className}`}>
-      {stale && <TriangleAlert className="size-3.5 shrink-0" strokeWidth={2} aria-hidden="true" />}
+      {stale && <Warning className="size-3.5 shrink-0" aria-hidden="true" />}
       <span>
         {stale ? 'Last good data ' : `${prefix} `}
         <time dateTime={at} title={formatExact(at)}>

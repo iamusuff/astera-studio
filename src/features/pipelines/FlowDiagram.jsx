@@ -135,10 +135,10 @@ export default function FlowDiagram({ pipeline, selectedId, onSelect }) {
 }
 
 const NODE = {
-  succeeded: 'border-transparent bg-surface shadow-[var(--shadow-card)]',
-  running: 'border-run-dot/60 bg-surface shadow-[var(--shadow-card)]',
-  failed: 'border-fail-dot/70 bg-surface shadow-[var(--shadow-card)]',
-  waiting: 'border-dashed border-line-strong bg-paper',
+  succeeded: 'border-white/60 bg-surface/80 shadow-[0_1px_3px_rgb(0_0_0/0.06)] dark:border-white/5 dark:bg-white/[0.06]',
+  running: 'border-run-dot/60 bg-surface/80 shadow-[0_1px_3px_rgb(0_0_0/0.06)] motion-safe:animate-[breathe_2.4s_ease-in-out_infinite] dark:bg-white/[0.06]',
+  failed: 'border-fail-dot/70 bg-surface/85 shadow-[0_1px_3px_rgb(0_0_0/0.06)] dark:bg-white/[0.06]',
+  waiting: 'border-dashed border-line-strong bg-transparent',
 }
 
 // nodeRef, not ref: in React 18 a function component can't receive `ref` as a prop.

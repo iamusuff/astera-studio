@@ -1,4 +1,4 @@
-import { ChartColumn, Table2 } from 'lucide-react'
+import { ChartBar, Table } from '@phosphor-icons/react'
 import { useState } from 'react'
 
 import { useIsPhone } from '../../hooks/useMediaQuery.js'
@@ -38,9 +38,9 @@ export default function ChartPanel({ chart, onSelect, staleNotice, actions, foot
             onClick={() => setView(asTable ? 'chart' : 'table')}
           >
             {asTable ? (
-              <ChartColumn className="size-[18px]" aria-hidden="true" />
+              <ChartBar className="size-[18px]" aria-hidden="true" />
             ) : (
-              <Table2 className="size-[18px]" aria-hidden="true" />
+              <Table className="size-[18px]" aria-hidden="true" />
             )}
           </Button>
         </>

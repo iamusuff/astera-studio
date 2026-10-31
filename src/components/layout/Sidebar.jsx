@@ -1,7 +1,9 @@
 import { motion } from 'motion/react'
-import { PanelLeft } from 'lucide-react'
+import { CircleNotch, SidebarSimple, WarningCircle } from '@phosphor-icons/react'
 import { NavLink } from 'react-router'
 
+import { useNow } from '../../hooks/useNow.js'
+import { formatShortAgo } from '../../lib/format.js'
 import { usePipelines } from '../../state/AppStore.jsx'
 import Logo from '../brand/Logo.jsx'
 import AppearanceControl from './AppearanceControl.jsx'
@@ -9,23 +11,22 @@ import { useLayout } from './AppShell.jsx'
 import NavBadge, { useFailedCount } from './NavBadge.jsx'
 import { navItems } from './navItems.js'
 
-const STATUS_DOT = {
-  succeeded: 'bg-ok-dot',
-  running: 'bg-run-dot',
-  failed: 'bg-fail-dot',
-  scheduled: 'bg-line-strong',
-}
+// Selected rows: a soft frosted pill, like macOS sidebars
+const SELECTED = 'bg-black/[0.06] font-semibold dark:bg-white/10'
+const HOVER = 'hover:bg-black/[0.035] dark:hover:bg-white/5'
 
 /*
   Mac and iPad landscape: a translucent sidebar, like Finder or Mail.
-  Besides the three sections it lists every pipeline with a status dot, so a
-  failure is visible, and one click away, from anywhere in the app.
+  Besides the three sections it lists every pipeline. Healthy ones stay quiet
+  (just how long ago they ran); only a failure (red mark) or a run in progress
+  (spinner) draws the eye, so problems are visible from anywhere in the app.
   It collapses with a spring (toolbar button or the [ key).
 */
 export default function Sidebar({ open }) {
   const { toggleSidebar } = useLayout()
   const failed = useFailedCount()
   const pipelines = usePipelines()
+  useNow()
 
   return (
     <motion.aside
@@ -33,7 +34,7 @@ export default function Sidebar({ open }) {
       initial={false}
       animate={{ width: open ? 264 : 0 }}
       transition={{ type: 'spring', stiffness: 420, damping: 42 }}
-      className="sticky top-0 h-dvh shrink-0 overflow-hidden"
+      className="sticky top-0 z-[2] h-dvh shrink-0 overflow-hidden"
       inert={!open || undefined}
     >
       <div className="glass-bar flex h-full w-[264px] flex-col border-r border-line">
@@ -46,7 +47,7 @@ export default function Sidebar({ open }) {
             title="Hide sidebar ( [ )"
             className="grid size-8 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-sunken hover:text-ink"
           >
-            <PanelLeft className="size-[18px]" strokeWidth={1.75} aria-hidden="true" />
+            <SidebarSimple className="size-[18px]" aria-hidden="true" />
           </button>
         </div>
 
@@ -56,14 +57,17 @@ export default function Sidebar({ open }) {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex h-9 items-center gap-2.5 rounded-[9px] px-2.5 text-[14px] transition-colors ${
-                  isActive ? 'bg-sunken font-semibold' : 'hover:bg-sunken/60'
-                }`
+                `flex h-9 items-center gap-2.5 rounded-[10px] px-2.5 text-[14px] transition-colors ${isActive ? SELECTED : HOVER}`
               }
             >
-              <Icon className="size-[18px] text-tint-text" strokeWidth={1.9} aria-hidden="true" />
-              {label}
-              {showFailedCount && <NavBadge count={failed} className="ml-auto" />}
+              {({ isActive }) => (
+                <>
+                  {/* Filled icon when selected, outline otherwise, like iOS and macOS */}
+                  <Icon className="size-[19px] text-tint-text" weight={isActive ? 'fill' : 'regular'} aria-hidden="true" />
+                  {label}
+                  {showFailedCount && <NavBadge count={failed} className="ml-auto" />}
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -78,14 +82,13 @@ export default function Sidebar({ open }) {
                 <NavLink
                   to={`/pipelines/${p.id}`}
                   className={({ isActive }) =>
-                    `flex h-8 items-center gap-2.5 rounded-[9px] px-2.5 text-[13px] transition-colors ${
-                      isActive ? 'bg-sunken font-semibold' : 'text-ink-muted hover:bg-sunken/60 hover:text-ink'
+                    `flex h-8 items-center gap-2 rounded-[10px] pr-2.5 pl-[38px] text-[13px] transition-colors ${
+                      isActive ? `${SELECTED} text-ink` : `text-ink-muted hover:text-ink ${HOVER}`
                     }`
                   }
                 >
-                  <span className={`size-2 shrink-0 rounded-full ${STATUS_DOT[p.status]}`} aria-hidden="true" />
-                  <span className="truncate">{p.name}</span>
-                  <span className="sr-only">, {p.status}</span>
+                  <span className="min-w-0 flex-1 truncate">{p.name}</span>
+                  <PipelineIndicator pipeline={p} />
                 </NavLink>
               </li>
             ))}
@@ -104,6 +107,32 @@ export default function Sidebar({ open }) {
         </div>
       </div>
     </motion.aside>
+  )
+}
+
+// Quiet unless something needs attention.
+function PipelineIndicator({ pipeline }) {
+  if (pipeline.status === 'failed') {
+    return (
+      <>
+        <WarningCircle className="size-4 shrink-0 text-fail-dot" weight="fill" aria-hidden="true" />
+        <span className="sr-only">, failed</span>
+      </>
+    )
+  }
+  if (pipeline.status === 'running') {
+    return (
+      <>
+        <CircleNotch className="size-3.5 shrink-0 text-run-dot motion-safe:animate-spin" weight="bold" aria-hidden="true" />
+        <span className="sr-only">, running</span>
+      </>
+    )
+  }
+  return (
+    <span className="shrink-0 text-xs text-ink-faint tabular-nums" title={`Last run ${pipeline.status}`}>
+      {formatShortAgo(pipeline.lastRun.finishedAt ?? pipeline.lastRun.startedAt)}
+      <span className="sr-only"> ago, {pipeline.status}</span>
+    </span>
   )
 }
 

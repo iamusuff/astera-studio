@@ -73,6 +73,15 @@ export function formatRelative(iso) {
   return dayTime.format(date)
 }
 
+// Tight spaces (sidebar): "now", "17m", "2h", "1d"
+export function formatShortAgo(iso) {
+  const mins = Math.max(0, Math.round((now() - new Date(iso)) / 60000))
+  if (mins < 1) return 'now'
+  if (mins < 60) return `${mins}m`
+  const hours = Math.round(mins / 60)
+  return hours < 24 ? `${hours}h` : `${Math.round(hours / 24)}d`
+}
+
 // Exact timestamp for tooltips and <time> titles: "Oct 31, 6:04 AM"
 export const formatExact = (iso) => dayTime.format(new Date(iso))
 export const formatClock = (iso) => time.format(new Date(iso))

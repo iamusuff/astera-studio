@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react'
+import { Check } from '@phosphor-icons/react'
 import { useState } from 'react'
 
 import Button from '../../components/ui/Button.jsx'
@@ -62,7 +62,7 @@ export default function FilterEditor({ pipeline, step }) {
                     }`}
                     aria-hidden="true"
                   >
-                    {checked && <Check className="size-3.5" strokeWidth={3} />}
+                    {checked && <Check className="size-3.5" />}
                   </span>
                   <span className="flex-1">{option.label}</span>
                   <span className="text-sm text-ink-muted tabular-nums">{formatNumber(option.rows)}</span>

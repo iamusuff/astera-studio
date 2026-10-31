@@ -1,4 +1,4 @@
-import { TriangleAlert } from 'lucide-react'
+import { Warning } from '@phosphor-icons/react'
 
 import { useNow } from '../../hooks/useNow.js'
 import { formatClock, formatRelative } from '../../lib/format.js'
@@ -21,7 +21,7 @@ export default function StaleWarning({ pipeline, compact = false, affected = 'th
       className="flex flex-col gap-3 rounded-2xl bg-warn-soft px-4 py-3.5 sm:flex-row sm:items-center"
     >
       <div className="flex min-w-0 flex-1 gap-2.5">
-        <TriangleAlert className="mt-0.5 size-[18px] shrink-0 text-warn-dot" strokeWidth={2.2} aria-hidden="true" />
+        <Warning className="mt-0.5 size-[18px] shrink-0 text-warn-dot" aria-hidden="true" />
         <p className="text-sm text-ink">
           <span className="font-semibold">Data may be out of date.</span>{' '}
           {compact ? (

@@ -24,7 +24,7 @@ export default function SourcesStrip() {
           <li key={p.id} className="w-[15.5rem] shrink-0 snap-start md:w-auto">
             <Link
               to={`/pipelines/${p.id}`}
-              className={`flex h-full flex-col gap-2 rounded-2xl bg-surface px-4 py-3.5 shadow-[var(--shadow-card)] transition-transform active:scale-[0.98] ${
+              className={`flex h-full flex-col gap-2 rounded-2xl glass-card px-4 py-3.5 transition-transform duration-300 ease-out-ui active:scale-[0.98] pointer-fine:hover:-translate-y-0.5 ${
                 p.status === 'failed' ? 'ring-1 ring-fail-dot/45' : ''
               }`}
             >

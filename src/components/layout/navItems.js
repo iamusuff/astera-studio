@@ -1,9 +1,9 @@
-import { LayoutDashboard, MessageSquare, Workflow } from 'lucide-react'
+import { ChatCircle, FlowArrow, SquaresFour } from '@phosphor-icons/react'
 
 // One list drives all three navigation patterns (sidebar, icon rail, tab bar),
 // so the destinations and their order can never drift apart between devices.
 export const navItems = [
-  { to: '/chat', label: 'Chat', icon: MessageSquare },
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/pipelines', label: 'Pipelines', icon: Workflow, showFailedCount: true },
+  { to: '/chat', label: 'Chat', icon: ChatCircle },
+  { to: '/dashboard', label: 'Dashboard', icon: SquaresFour },
+  { to: '/pipelines', label: 'Pipelines', icon: FlowArrow, showFailedCount: true },
 ]

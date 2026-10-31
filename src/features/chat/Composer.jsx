@@ -1,4 +1,4 @@
-import { ArrowUp } from 'lucide-react'
+import { ArrowUp } from '@phosphor-icons/react'
 import { useState } from 'react'
 
 import { useActions } from '../../state/AppStore.jsx'
@@ -45,7 +45,7 @@ export default function Composer({ disabled }) {
           aria-label="Ask"
           className="grid size-10 shrink-0 place-items-center rounded-full bg-tint text-white transition-[transform,opacity] duration-200 ease-out-ui active:scale-90 disabled:bg-line-strong disabled:opacity-60"
         >
-          <ArrowUp className="size-5" strokeWidth={2.4} aria-hidden="true" />
+          <ArrowUp className="size-5" aria-hidden="true" />
         </button>
       </form>
     </div>

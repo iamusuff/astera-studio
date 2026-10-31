@@ -1,8 +1,9 @@
-import { TriangleAlert } from 'lucide-react'
+import { Warning } from '@phosphor-icons/react'
 
 import { getKpis } from '../../data/metrics.js'
 import { formatCurrency, formatCurrencyCompact, formatNumber, formatPercent } from '../../lib/format.js'
 import { isStale, usePipeline } from '../../state/AppStore.jsx'
+import CountUp from '../../components/ui/CountUp.jsx'
 
 /*
   Four headline numbers in one panel, separated by hairlines rather than four
@@ -23,7 +24,7 @@ export default function KpiStrip({ period, region }) {
   const tiles = [
     {
       label: 'Revenue',
-      value: formatCurrencyCompact(k.revenue),
+      value: <CountUp value={k.revenue} format={formatCurrencyCompact} />,
       exact: formatCurrency(k.revenue),
       note: (
         <span className={belowTarget ? 'text-fail' : ''}>
@@ -34,23 +35,23 @@ export default function KpiStrip({ period, region }) {
       stale: isStale(sales),
       primary: true,
     },
-    { label: 'Orders', value: formatNumber(k.orders), change: prev && change(k.orders, prev.orders), stale: isStale(sales) },
+    { label: 'Orders', value: <CountUp value={k.orders} format={(v) => formatNumber(Math.round(v))} />, change: prev && change(k.orders, prev.orders), stale: isStale(sales) },
     {
       label: 'Avg order',
-      value: `$${k.avgOrderValue.toFixed(2)}`,
+      value: <CountUp value={k.avgOrderValue} format={(v) => `$${v.toFixed(2)}`} />,
       change: prev && change(k.avgOrderValue, prev.avgOrderValue),
       stale: isStale(sales),
     },
     {
       label: 'Return rate',
-      value: formatPercent(k.returnRate),
+      value: <CountUp value={k.returnRate} format={(v) => formatPercent(v)} />,
       change: prev && `${formatPoints(k.returnRate - prev.returnRate)}${vs}`,
       stale: isStale(returns),
     },
   ]
 
   return (
-    <dl className="grid grid-cols-3 overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)] md:grid-cols-4">
+    <dl className="grid grid-cols-3 overflow-hidden rounded-[var(--radius-card)] glass-card md:grid-cols-4">
       {tiles.map((t, i) => (
         <div
           key={t.label}
@@ -62,7 +63,7 @@ export default function KpiStrip({ period, region }) {
             {t.label}
             {t.stale && (
               <>
-                <TriangleAlert className="size-3.5 text-warn" strokeWidth={2} aria-hidden="true" />
+                <Warning className="size-3.5 text-warn" aria-hidden="true" />
                 <span className="sr-only">(may be out of date)</span>
               </>
             )}

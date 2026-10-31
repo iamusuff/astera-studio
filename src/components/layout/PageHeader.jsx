@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { ChevronLeft, PanelLeft } from 'lucide-react'
+import { CaretLeft, SidebarSimple } from '@phosphor-icons/react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 
@@ -55,7 +55,7 @@ export default function PageHeader({ title, description, back, actions, accessor
                 title="Show sidebar ( [ )"
                 className="grid size-9 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-sunken hover:text-ink"
               >
-                <PanelLeft className="size-[18px]" strokeWidth={1.75} aria-hidden="true" />
+                <SidebarSimple className="size-[18px]" aria-hidden="true" />
               </button>
             )}
             {back && (
@@ -63,7 +63,7 @@ export default function PageHeader({ title, description, back, actions, accessor
                 to={back.to}
                 className="-ml-1 flex min-h-11 min-w-0 items-center rounded-lg pr-2 text-[17px] text-tint-text transition-opacity active:opacity-50 pointer-fine:min-h-9 pointer-fine:text-[15px]"
               >
-                <ChevronLeft className="size-6 shrink-0 pointer-fine:size-5" strokeWidth={2.4} aria-hidden="true" />
+                <CaretLeft className="size-6 shrink-0 pointer-fine:size-5" aria-hidden="true" />
                 <span className="truncate">{back.label}</span>
               </Link>
             )}

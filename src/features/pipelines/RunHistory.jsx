@@ -6,7 +6,7 @@ import { formatDuration, formatExact, formatRelative } from '../../lib/format.js
 export default function RunHistory({ pipeline }) {
   useNow()
   return (
-    <section aria-labelledby="runs-heading" className="rounded-[var(--radius-group)] bg-surface shadow-[var(--shadow-card)]">
+    <section aria-labelledby="runs-heading" className="rounded-[var(--radius-group)] glass-card">
       <h2 id="runs-heading" className="px-4 pt-4 pb-2 text-sm font-semibold">
         Recent runs
       </h2>

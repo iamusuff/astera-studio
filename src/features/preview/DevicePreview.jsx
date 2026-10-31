@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from '@phosphor-icons/react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 

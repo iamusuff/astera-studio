@@ -73,7 +73,7 @@ def main():
     try:
         wait_for_port(PORT)
         with sync_playwright() as p:
-            browser = p.chromium.launch()
+            browser = p.chromium.launch(channel='chromium')  # full renderer: draws the glass blur
             for device, (w, h, touch) in DEVICES.items():
                 context = browser.new_context(
                     reduced_motion="reduce",  # charts render instantly, so screenshots are never mid-animation

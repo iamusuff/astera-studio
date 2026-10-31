@@ -39,7 +39,7 @@ export default function TabBar() {
                     />
                   )}
                   <span className="relative">
-                    <Icon className="size-[22px]" strokeWidth={isActive ? 2.1 : 1.8} aria-hidden="true" />
+                    <Icon className="size-[24px]" weight={isActive ? 'fill' : 'regular'} aria-hidden="true" />
                     {showFailedCount && <NavBadge count={failed} className="absolute -top-1.5 -right-3" />}
                   </span>
                   <span className="relative">{label}</span>

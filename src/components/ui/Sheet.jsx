@@ -12,7 +12,7 @@ export default function Sheet({ open, onOpenChange, title, description, children
     <Drawer.Root open={open} onOpenChange={onOpenChange} shouldScaleBackground>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-40 bg-black/35" />
-        <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-[28px] bg-surface shadow-[0_-8px_40px_rgb(0_0_0/0.12)] outline-none">
+        <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-[28px] bg-surface/90 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_-8px_40px_rgb(0_0_0/0.12)] outline-none">
           <Drawer.Handle className="mt-2 mb-1 !h-[5px] !w-9 !bg-line-strong" />
           <div className="px-5 pt-2 pb-3">
             <Drawer.Title className="text-[20px] font-bold tracking-[-0.02em]">{title}</Drawer.Title>

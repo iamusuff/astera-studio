@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 import { useLocation, useNavigate, useOutlet } from 'react-router'
 
 import { useMediaQuery } from '../../hooks/useMediaQuery.js'
+import Ambient from './Ambient.jsx'
 import Sidebar from './Sidebar.jsx'
 import TabBar from './TabBar.jsx'
 
@@ -91,7 +92,8 @@ export default function AppShell() {
     <MotionConfig reducedMotion="user">
       <LayoutContext.Provider value={layout}>
         {/* data-vaul-drawer-wrapper: lets bottom sheets shrink the page back, like iOS */}
-        <div data-vaul-drawer-wrapper="" className="min-h-dvh bg-paper lg:flex">
+        <div data-vaul-drawer-wrapper="" className="relative min-h-dvh bg-paper lg:flex">
+          <Ambient />
           {/* Skip link: first thing a keyboard user reaches. It focuses <main> directly,
               because a plain #main link would change the hash route. */}
           <a
@@ -111,7 +113,7 @@ export default function AppShell() {
           <main
             id="main"
             tabIndex={-1}
-            className="min-w-0 flex-1 pb-[calc(6.5rem+env(safe-area-inset-bottom,0px))] outline-none lg:pb-0"
+            className="relative z-[1] min-w-0 flex-1 pb-[calc(6.5rem+env(safe-area-inset-bottom,0px))] outline-none lg:pb-0"
           >
             <motion.div key={location.pathname} initial={enter} animate={{ opacity: 1, x: 0, y: 0 }} transition={PAGE_SPRING}>
               {outlet}

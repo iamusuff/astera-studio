@@ -1,4 +1,4 @@
-import { ChevronDown, SlidersHorizontal } from 'lucide-react'
+import { CaretDown, SlidersHorizontal } from '@phosphor-icons/react'
 import { useState } from 'react'
 
 import Button from '../../components/ui/Button.jsx'
@@ -81,7 +81,7 @@ function FilterControls({ filters, stacked = false }) {
               </option>
             ))}
           </select>
-          <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
+          <CaretDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
         </div>
       </div>
     </div>

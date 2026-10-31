@@ -1,4 +1,4 @@
-import { ChartColumn, Check, Pin, Table2 } from 'lucide-react'
+import { ChartBar, Check, PushPin, Table } from '@phosphor-icons/react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 
@@ -53,9 +53,9 @@ export default function AnswerMessage({ answerId }) {
             onClick={() => setView(view === 'chart' ? 'table' : 'chart')}
           >
             {view === 'chart' ? (
-              <Table2 className="size-4" aria-hidden="true" />
+              <Table className="size-4" aria-hidden="true" />
             ) : (
-              <ChartColumn className="size-4" aria-hidden="true" />
+              <ChartBar className="size-4" aria-hidden="true" />
             )}
             {view === 'chart' ? 'View as table' : 'View as chart'}
           </Button>
@@ -92,7 +92,7 @@ function PinButton({ answer }) {
 
   return (
     <Button variant={pinned ? 'secondary' : 'primary'} size="sm" aria-pressed={pinned} onClick={toggle}>
-      {pinned ? <Check className="size-4" aria-hidden="true" /> : <Pin className="size-4" aria-hidden="true" />}
+      {pinned ? <Check className="size-4" aria-hidden="true" /> : <PushPin className="size-4" aria-hidden="true" />}
       {pinned ? 'Pinned' : 'Pin to dashboard'}
     </Button>
   )

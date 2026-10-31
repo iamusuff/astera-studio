@@ -1,4 +1,4 @@
-import { RotateCw } from 'lucide-react'
+import { ArrowClockwise } from '@phosphor-icons/react'
 import { useState } from 'react'
 
 import Button from '../../components/ui/Button.jsx'
@@ -35,7 +35,7 @@ export default function StepInspector({ pipeline, step, onSelect, showHeader = t
       {showHeader && (
         <header className="mb-4">
           <p className="flex items-center gap-1.5 text-sm text-ink-muted">
-            <Icon className="size-4" strokeWidth={1.75} aria-hidden="true" />
+            <Icon className="size-4" aria-hidden="true" />
             {STEP_KINDS[step.kind]}
           </p>
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -67,7 +67,7 @@ function Details({ pipeline, step, onSelect }) {
   const inputs = step.inputs.map((id) => pipeline.steps.find((s) => s.id === id))
   const rerunButton = (
     <Button variant="primary" onClick={() => rerun(pipeline.id, step.id)} disabled={running}>
-      <RotateCw className="size-4" aria-hidden="true" />
+      <ArrowClockwise className="size-4" aria-hidden="true" />
       Re-run from this step
     </Button>
   )
@@ -108,7 +108,7 @@ function Details({ pipeline, step, onSelect }) {
         </Notice>
       )}
 
-      <dl className="grid grid-cols-3 divide-x divide-line rounded-2xl bg-paper">
+      <dl className="grid grid-cols-3 divide-x divide-line rounded-2xl inset-fill">
         <Stat label="Rows in" value={step.rowsIn != null ? formatNumber(step.rowsIn) : '–'} />
         <Stat
           label="Rows out"

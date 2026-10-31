@@ -1,4 +1,4 @@
-import { Workflow } from 'lucide-react'
+import { FlowArrow } from '@phosphor-icons/react'
 import { Link } from 'react-router'
 
 import { isStale } from '../../state/AppStore.jsx'
@@ -30,7 +30,7 @@ export default function ChartCard({
   const running = pipeline?.status === 'running'
 
   return (
-    <section className={`flex min-w-0 flex-col rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)] ${className}`}>
+    <section className={`flex min-w-0 flex-col rounded-[var(--radius-card)] glass-card ${className}`}>
       <header className="flex items-start justify-between gap-3 px-4 pt-4 md:px-5 md:pt-5">
         <div className="min-w-0">
           <Heading className="text-[17px] font-semibold tracking-[-0.02em]">{title}</Heading>
@@ -54,7 +54,7 @@ export default function ChartCard({
             to={`/pipelines/${pipeline.id}`}
             className="-mx-1 inline-flex min-h-11 items-center gap-1.5 rounded px-1 text-[13px] font-semibold text-tint-text transition-opacity active:opacity-50 pointer-fine:min-h-0"
           >
-            <Workflow className="size-3.5" strokeWidth={2} aria-hidden="true" />
+            <FlowArrow className="size-3.5" aria-hidden="true" />
             {pipeline.name} pipeline
           </Link>
           <Freshness at={pipeline.lastSuccessAt} stale={stale} />

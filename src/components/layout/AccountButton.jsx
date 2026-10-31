@@ -1,4 +1,4 @@
-import { MonitorSmartphone } from 'lucide-react'
+import { Devices } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 
@@ -40,7 +40,7 @@ export default function AccountButton() {
             onClick={() => setOpen(false)}
             className="flex min-h-11 items-center gap-2 text-[15px] font-semibold text-tint-text"
           >
-            <MonitorSmartphone className="size-[18px]" aria-hidden="true" />
+            <Devices className="size-[18px]" aria-hidden="true" />
             Device preview
           </Link>
         </div>

@@ -1,4 +1,4 @@
-import { SquarePen } from 'lucide-react'
+import { NotePencil } from '@phosphor-icons/react'
 
 import PageHeader from '../../components/layout/PageHeader.jsx'
 import Button from '../../components/ui/Button.jsx'
@@ -31,7 +31,7 @@ export default function ChatScreen() {
             actions={
               messages.length > 0 && (
                 <Button variant="ghost" size="sm" onClick={actions.clearChat} disabled={thinking}>
-                  <SquarePen className="size-[18px] md:size-4" aria-hidden="true" />
+                  <NotePencil className="size-[18px] md:size-4" aria-hidden="true" />
                   <span className="max-md:sr-only">New chat</span>
                 </Button>
               )

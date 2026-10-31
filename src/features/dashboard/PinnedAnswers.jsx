@@ -1,4 +1,4 @@
-import { PinOff } from 'lucide-react'
+import { PushPinSlash } from '@phosphor-icons/react'
 import { Link } from 'react-router'
 
 import ChartPanel from '../../components/charts/ChartPanel.jsx'
@@ -44,7 +44,7 @@ export default function PinnedAnswers() {
                 staleNotice={false}
                 actions={
                   <Button variant="ghost" size="icon" aria-label={`Unpin ${answer.title}`} title="Unpin" onClick={unpin}>
-                    <PinOff className="size-[18px]" aria-hidden="true" />
+                    <PushPinSlash className="size-[18px]" aria-hidden="true" />
                   </Button>
                 }
               />

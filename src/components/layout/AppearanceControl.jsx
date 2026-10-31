@@ -1,10 +1,10 @@
-import { Monitor, Moon, Sun } from 'lucide-react'
+import { Desktop, Moon, Sun } from '@phosphor-icons/react'
 
 import { useTheme } from '../../state/theme.jsx'
 import SegmentedControl from '../ui/SegmentedControl.jsx'
 
 const OPTIONS = [
-  { value: 'system', label: 'Auto', icon: Monitor },
+  { value: 'system', label: 'Auto', icon: Desktop },
   { value: 'light', label: 'Light', icon: Sun },
   { value: 'dark', label: 'Dark', icon: Moon },
 ]
@@ -22,7 +22,7 @@ export default function AppearanceControl({ compact = false }) {
         value,
         label: (
           <span className="inline-flex items-center gap-1.5">
-            <Icon className="size-3.5" strokeWidth={2} aria-hidden="true" />
+            <Icon className="size-3.5" aria-hidden="true" />
             {label}
           </span>
         ),
