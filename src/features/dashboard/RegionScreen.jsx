@@ -1,9 +1,9 @@
-import { ChevronLeft } from 'lucide-react'
-import { Link, Navigate, useParams } from 'react-router'
+import { Navigate, useParams } from 'react-router'
 
 import ChartCard from '../../components/charts/ChartCard.jsx'
 import ChartPanel from '../../components/charts/ChartPanel.jsx'
 import DataTable from '../../components/charts/DataTable.jsx'
+import PageHeader from '../../components/layout/PageHeader.jsx'
 import StaleWarning from '../../components/charts/StaleWarning.jsx'
 import SegmentedControl from '../../components/ui/SegmentedControl.jsx'
 import { DASHBOARD_NAME, regionDetail } from '../../data/dashboard.js'
@@ -30,29 +30,19 @@ export default function RegionScreen() {
 
   return (
     <>
-      <header className="px-4 pt-[max(1rem,env(safe-area-inset-top,0px))] pb-5 md:px-8 md:pt-6 xl:px-10">
-        <Link
-          to="/dashboard"
-          className="-ml-2 inline-flex min-h-11 items-center gap-1 rounded-lg pr-3 pl-1 text-sm text-ink-muted hover:text-ink pointer-fine:min-h-8"
-        >
-          <ChevronLeft className="size-4" aria-hidden="true" />
-          {DASHBOARD_NAME}
-        </Link>
-        <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h1 className="text-[22px] font-semibold tracking-[-0.015em] md:text-2xl">{detail.region.name} region</h1>
-            <p className="mt-1 text-ink-muted">
-              {getPeriod(filters.period).label}, {detail.region.stores.length} stores
-            </p>
-          </div>
+      <PageHeader
+        title={`${detail.region.name} region`}
+        description={`${getPeriod(filters.period).label}, ${detail.region.stores.length} stores`}
+        back={{ to: '/dashboard', label: DASHBOARD_NAME }}
+        actions={
           <SegmentedControl
             label="Date range"
             options={PERIOD_OPTIONS}
             value={filters.period}
             onChange={(v) => setFilter('period', v)}
           />
-        </div>
-      </header>
+        }
+      />
 
       <div className="space-y-6 px-4 pb-10 md:px-8 xl:px-10">
         {isStale(sales) && <StaleWarning pipeline={sales} affected="these numbers show" />}

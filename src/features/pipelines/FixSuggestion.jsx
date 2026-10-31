@@ -23,6 +23,7 @@ export default function FixSuggestion({ pipeline, step }) {
     const undoId = applyFix(pipeline.id, step.id)
     notify({
       title: 'Fix approved',
+      success: true,
       description: 'Re-run this step to refresh the data.',
       secondary: { label: 'Re-run now', onClick: () => rerun(pipeline.id, step.id) },
       action: { label: 'Undo', onClick: () => undo(undoId) },
@@ -43,7 +44,7 @@ export default function FixSuggestion({ pipeline, step }) {
         </details>
       </section>
 
-      <section className="rounded-xl border border-line-strong bg-surface p-4">
+      <section className="rounded-2xl bg-paper p-4">
         <p className="flex items-center gap-2 text-sm text-ink-muted">
           <Wrench className="size-4" strokeWidth={1.75} aria-hidden="true" />
           Suggested fix

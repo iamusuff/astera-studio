@@ -37,6 +37,7 @@ export default function FilterEditor({ pipeline, step }) {
     const undoId = editStep(pipeline.id, step.id, { statuses }, `now keeps ${listLabels(statuses)} orders`)
     notify({
       title: 'Filter updated',
+      success: true,
       description: 'Applies on the next run.',
       secondary: { label: 'Re-run now', onClick: () => rerun(pipeline.id, step.id) },
       action: { label: 'Undo', onClick: () => undo(undoId) },
@@ -56,8 +57,8 @@ export default function FilterEditor({ pipeline, step }) {
                 <label className="flex min-h-12 cursor-pointer items-center gap-3 px-3.5 py-2">
                   <input type="checkbox" className="peer sr-only" checked={checked} onChange={() => toggle(option.id)} />
                   <span
-                    className={`grid size-5 shrink-0 place-items-center rounded border-2 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink ${
-                      checked ? 'border-ink bg-ink text-white' : 'border-line-strong bg-surface'
+                    className={`grid size-5 shrink-0 place-items-center rounded border-2 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-tint ${
+                      checked ? 'border-tint bg-tint text-white' : 'border-line-strong bg-surface'
                     }`}
                     aria-hidden="true"
                   >

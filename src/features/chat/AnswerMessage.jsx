@@ -83,6 +83,7 @@ function PinButton({ answer }) {
     const undoId = actions.pin(answer.id)
     notify({
       title: 'Pinned to dashboard',
+      success: true,
       description: answer.title,
       secondary: { label: 'View', onClick: () => navigate('/dashboard') },
       action: { label: 'Undo', onClick: () => actions.undo(undoId) },

@@ -1,17 +1,42 @@
 import { formatCurrency, formatCurrencyCompact, formatPercent } from '../../lib/format.js'
 
-// SVG chart parts need real color values. These mirror the tokens in
-// styles/index.css; keep both in sync.
-export const C = {
-  series: '#3b5266',
-  seriesMuted: '#b7c1ca',
-  fail: '#b83228',
-  ink: '#16202a',
-  inkMuted: '#56626e',
-  inkFaint: '#8b959f',
-  line: '#dde2e6',
-  sunken: '#eceff1',
+import { useTheme } from '../../state/theme.jsx'
+
+// SVG chart parts need real color values, one set per appearance. They mirror
+// the tokens in styles/index.css; keep both in sync. Bars use Apple's bright
+// status colors (graphics need 3:1 contrast, text needs 4.5:1).
+export const CHART_COLORS = {
+  light: {
+    series: '#0071e3',
+    seriesMuted: '#d1d1d6',
+    fail: '#ff3b30',
+    run: '#5856d6',
+    warn: '#b25000',
+    waiting: '#c7c7cc',
+    ink: '#1d1d1f',
+    inkMuted: '#636366',
+    inkFaint: '#aeaeb2',
+    line: '#e5e5ea',
+    sunken: '#f2f2f7',
+    surface: '#ffffff',
+  },
+  dark: {
+    series: '#0a84ff',
+    seriesMuted: '#48484a',
+    fail: '#ff453a',
+    run: '#7d7aff',
+    warn: '#ffb340',
+    waiting: '#48484a',
+    ink: '#f5f5f7',
+    inkMuted: '#98989d',
+    inkFaint: '#636366',
+    line: '#38383a',
+    sunken: '#2c2c2e',
+    surface: '#1c1c1e',
+  },
 }
+
+export const useChartColors = () => CHART_COLORS[useTheme()?.theme ?? 'light']
 
 // Axis labels are shorter than prose: $1.2M, $800K, 90%
 export function axisTick(format) {
@@ -53,7 +78,7 @@ export function percentTicks(max) {
   return Array.from({ length: Math.round(top / step) + 1 }, (_, i) => +(i * step).toFixed(4))
 }
 
-export const axisProps = {
+export const axisProps = (C) => ({
   tickLine: false,
   tick: { fontSize: 12, fill: C.inkMuted },
-}
+})

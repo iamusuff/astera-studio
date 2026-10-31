@@ -1,11 +1,16 @@
-import { useRef } from 'react'
+import { LayoutGroup, motion } from 'motion/react'
+import { useId, useRef } from 'react'
+
+export const SPRING = { type: 'spring', stiffness: 520, damping: 40, mass: 0.8 }
 
 /*
-  A small set of mutually exclusive choices (date range, chart type).
-  Built as a radio group: arrow keys move the selection, like native controls.
+  iOS segmented control. The white thumb slides to the chosen segment on a
+  spring (motion's shared layout animation), like the native control.
+  Built as a radio group: arrow keys move the selection.
 */
 export default function SegmentedControl({ label, options, value, onChange, className = '' }) {
   const refs = useRef([])
+  const groupId = useId()
 
   function onKeyDown(event, index) {
     const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key]
@@ -17,29 +22,41 @@ export default function SegmentedControl({ label, options, value, onChange, clas
   }
 
   return (
-    <div role="radiogroup" aria-label={label} className={`inline-flex rounded-lg bg-sunken p-1 ${className}`}>
-      {options.map((option, index) => {
-        const selected = option.value === value
-        return (
-          <button
-            key={option.value}
-            ref={(el) => (refs.current[index] = el)}
-            type="button"
-            role="radio"
-            aria-checked={selected}
-            tabIndex={selected ? 0 : -1}
-            onClick={() => onChange(option.value)}
-            onKeyDown={(e) => onKeyDown(e, index)}
-            className={`h-10 rounded-md px-3 text-sm whitespace-nowrap transition-colors duration-150 pointer-fine:h-7 ${
-              selected
-                ? 'bg-surface font-medium text-ink shadow-[0_1px_2px_rgb(22_32_42/0.12)]'
-                : 'text-ink-muted hover:text-ink'
-            }`}
-          >
-            {option.label}
-          </button>
-        )
-      })}
-    </div>
+    <LayoutGroup id={groupId}>
+      <div role="radiogroup" aria-label={label} className={`inline-flex rounded-[11px] bg-sunken p-[3px] ${className}`}>
+        {options.map((option, index) => {
+          const selected = option.value === value
+          return (
+            <button
+              key={option.value}
+              ref={(el) => (refs.current[index] = el)}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              tabIndex={selected ? 0 : -1}
+              onClick={() => onChange(option.value)}
+              onKeyDown={(e) => onKeyDown(e, index)}
+              className={`relative h-10 rounded-[9px] px-3.5 text-sm whitespace-nowrap transition-colors duration-200 pointer-fine:h-7 pointer-fine:text-[13px] ${
+                selected ? 'font-semibold text-ink' : 'font-medium text-ink-muted hover:text-ink'
+              }`}
+            >
+              {selected && <Thumb />}
+              <span className="relative">{option.label}</span>
+            </button>
+          )
+        })}
+      </div>
+    </LayoutGroup>
+  )
+}
+
+export function Thumb({ className = 'rounded-[9px]' }) {
+  return (
+    <motion.span
+      layoutId="thumb"
+      transition={SPRING}
+      className={`absolute inset-0 bg-raised shadow-[0_3px_8px_rgb(0_0_0/0.12),0_1px_1px_rgb(0_0_0/0.04)] ${className}`}
+      aria-hidden="true"
+    />
   )
 }

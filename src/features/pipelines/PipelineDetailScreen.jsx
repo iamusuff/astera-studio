@@ -1,7 +1,8 @@
-import { ChevronDown, ChevronLeft, Play, RotateCw } from 'lucide-react'
+import { ChevronDown, Play, RotateCw } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
 
+import PageHeader from '../../components/layout/PageHeader.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Freshness from '../../components/ui/Freshness.jsx'
 import { notify } from '../../components/ui/notify.jsx'
@@ -59,11 +60,11 @@ export default function PipelineDetailScreen() {
 
         {isDesktop ? (
           <>
-            <section aria-label="Pipeline steps" className="rounded-xl border border-line bg-surface">
+            <section aria-label="Pipeline steps" className="rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)]">
               <FlowDiagram pipeline={pipeline} selectedId={selected?.id} onSelect={select} />
             </section>
             <div className="grid grid-cols-[minmax(0,1fr)_22rem] items-start gap-6">
-              <section aria-label="Selected step" className="rounded-xl border border-line bg-surface p-5">
+              <section aria-label="Selected step" className="rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)] p-5">
                 {inspector}
               </section>
               <aside aria-label="Runs and schedule" className="space-y-6">
@@ -84,7 +85,7 @@ export default function PipelineDetailScreen() {
             {!isPhone && (
               <section
                 aria-label="Selected step"
-                className="sticky top-6 max-h-[calc(100dvh-3rem)] overflow-y-auto rounded-xl border border-line bg-surface p-5"
+                className="sticky top-16 max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)] p-5"
               >
                 {inspector}
               </section>
@@ -140,26 +141,15 @@ function PipelineHeader({ pipeline }) {
   }
 
   return (
-    <header className="px-4 pt-[max(1rem,env(safe-area-inset-top,0px))] pb-5 md:px-8 md:pt-6 xl:px-10">
-      <Link
-        to="/pipelines"
-        className="-ml-2 inline-flex min-h-11 items-center gap-1 rounded-lg pr-3 pl-1 text-sm text-ink-muted hover:text-ink pointer-fine:min-h-8"
-      >
-        <ChevronLeft className="size-4" aria-hidden="true" />
-        Pipelines
-      </Link>
-      <div className="mt-1 flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <h1 className="text-[22px] font-semibold tracking-[-0.015em] md:text-2xl">{pipeline.name}</h1>
-            <StatusBadge status={pipeline.status} />
-          </div>
-          <p className="mt-1 max-w-[62ch] text-ink-muted">{pipeline.description}</p>
-          <Freshness at={pipeline.lastSuccessAt} stale={isStale(pipeline)} prefix="Data updated" className="mt-2" />
-        </div>
-        {action && <div className="w-full md:w-auto [&>button]:w-full md:[&>button]:w-auto">{action}</div>}
-      </div>
-    </header>
+    <PageHeader
+      title={pipeline.name}
+      back={{ to: '/pipelines', label: 'Pipelines' }}
+      accessory={<StatusBadge status={pipeline.status} />}
+      description={pipeline.description}
+      actions={action}
+    >
+      <Freshness at={pipeline.lastSuccessAt} stale={isStale(pipeline)} prefix="Data updated" className="mt-2" />
+    </PageHeader>
   )
 }
 
@@ -167,14 +157,14 @@ function FailureBanner({ pipeline, step, onReview }) {
   const chain = mainChain(pipeline)
   const position = chain.findIndex((s) => s.id === step.id) + 1
   return (
-    <div role="alert" className="flex flex-col gap-3 rounded-xl border border-fail/30 bg-fail-soft px-4 py-3 sm:flex-row sm:items-center">
+    <div role="alert" className="flex flex-col gap-3 rounded-2xl bg-fail-soft px-4 py-3.5 sm:flex-row sm:items-center">
       <p className="flex-1 text-sm">
         <span className="font-semibold">
           {position > 0 ? `Step ${position} of ${chain.length} failed` : 'A step failed'}: {step.name}.
         </span>{' '}
         {step.error.summary}. {pipeline.feeds[0]} is showing data from {formatRelative(pipeline.lastSuccessAt)}.
       </p>
-      <Button variant="secondary" size="sm" onClick={onReview} className="self-start sm:self-auto">
+      <Button variant="onColor" size="sm" onClick={onReview} className="self-start sm:self-auto">
         Review fix
       </Button>
     </div>
@@ -196,7 +186,7 @@ function PipelineSettings({ pipeline }) {
   }
 
   return (
-    <section aria-labelledby="settings-heading" className="rounded-xl border border-line bg-surface p-4">
+    <section aria-labelledby="settings-heading" className="rounded-[var(--radius-group)] bg-surface shadow-[var(--shadow-card)] p-4">
       <h2 id="settings-heading" className="text-sm font-semibold">
         Schedule and use
       </h2>
@@ -212,7 +202,7 @@ function PipelineSettings({ pipeline }) {
                   id="schedule"
                   value={pipeline.schedule.time}
                   onChange={(e) => changeSchedule(e.target.value)}
-                  className="h-11 w-full appearance-none rounded-lg border border-line-strong bg-surface text-ink pr-10 pl-3 pointer-fine:h-9 pointer-fine:text-sm"
+                  className="h-11 w-full appearance-none rounded-xl bg-sunken font-medium text-ink pr-10 pl-3 pointer-fine:h-9 pointer-fine:text-sm"
                 >
                   {SCHEDULE_OPTIONS.map((o) => (
                     <option key={o.time} value={o.time}>
@@ -236,7 +226,7 @@ function PipelineSettings({ pipeline }) {
           <dd className="mt-0.5 space-y-0.5">
             {pipeline.feeds.map((f) =>
               f === 'Sales overview' ? (
-                <Link key={f} to="/dashboard" className="block underline underline-offset-4">
+                <Link key={f} to="/dashboard" className="block font-semibold text-tint-text">
                   Sales overview dashboard
                 </Link>
               ) : (
@@ -264,6 +254,7 @@ function useCompletionToast(pipeline) {
     if (pipeline.status === 'succeeded') {
       notify({
         title: `${pipeline.name} succeeded`,
+        success: true,
         description: pipeline.feeds.includes('Sales overview') ? 'Sales overview is up to date.' : 'Data is up to date.',
         action: pipeline.feeds.includes('Sales overview')
           ? { label: 'View dashboard', onClick: () => navigate('/dashboard') }

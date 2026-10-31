@@ -50,7 +50,7 @@ export default function KpiStrip({ period, region }) {
   ]
 
   return (
-    <dl className="grid grid-cols-3 overflow-hidden rounded-xl border border-line bg-surface md:grid-cols-4">
+    <dl className="grid grid-cols-3 overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)] md:grid-cols-4">
       {tiles.map((t, i) => (
         <div
           key={t.label}
@@ -68,7 +68,7 @@ export default function KpiStrip({ period, region }) {
             )}
           </dt>
           <dd
-            className={`font-semibold tracking-[-0.01em] tabular-nums ${t.primary ? 'text-[28px] leading-tight md:text-2xl' : 'text-lg md:text-2xl'}`}
+            className={`font-semibold tracking-[-0.01em] tabular-nums ${t.primary ? 'text-[34px] leading-tight tracking-[-0.025em] md:text-[30px]' : 'text-xl md:text-[30px] md:tracking-[-0.025em]'}`}
             title={t.exact}
           >
             {t.value}

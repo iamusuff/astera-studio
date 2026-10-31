@@ -10,7 +10,7 @@ export default function ChartTooltip({ active, payload, label, format, extra }) 
   const row = payload[0].payload
 
   return (
-    <div className="min-w-40 rounded-lg border border-line bg-surface px-3 py-2.5 text-[13px] shadow-[0_6px_20px_rgb(22_32_42/0.12)]">
+    <div className="min-w-40 glass-float rounded-2xl px-3.5 py-2.5 text-[13px]">
       <p className="mb-1.5 font-semibold">{label}</p>
       <ul className="space-y-1">
         {payload.map((item) => (

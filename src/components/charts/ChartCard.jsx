@@ -30,10 +30,10 @@ export default function ChartCard({
   const running = pipeline?.status === 'running'
 
   return (
-    <section className={`flex min-w-0 flex-col rounded-xl border border-line bg-surface ${className}`}>
+    <section className={`flex min-w-0 flex-col rounded-[var(--radius-card)] bg-surface shadow-[var(--shadow-card)] ${className}`}>
       <header className="flex items-start justify-between gap-3 px-4 pt-4 md:px-5 md:pt-5">
         <div className="min-w-0">
-          <Heading className="text-[15px] font-semibold">{title}</Heading>
+          <Heading className="text-[17px] font-semibold tracking-[-0.02em]">{title}</Heading>
           {description && <p className="mt-0.5 text-sm text-ink-muted">{description}</p>}
         </div>
         {actions && <div className="-mt-1 -mr-1 flex shrink-0 items-center gap-1">{actions}</div>}
@@ -52,7 +52,7 @@ export default function ChartCard({
         <footer className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line px-4 py-2.5 md:px-5">
           <Link
             to={`/pipelines/${pipeline.id}`}
-            className="-mx-1 inline-flex min-h-11 items-center gap-1.5 rounded px-1 text-[13px] font-medium text-ink-muted hover:text-ink pointer-fine:min-h-0"
+            className="-mx-1 inline-flex min-h-11 items-center gap-1.5 rounded px-1 text-[13px] font-semibold text-tint-text transition-opacity active:opacity-50 pointer-fine:min-h-0"
           >
             <Workflow className="size-3.5" strokeWidth={2} aria-hidden="true" />
             {pipeline.name} pipeline

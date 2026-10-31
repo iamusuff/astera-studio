@@ -93,7 +93,7 @@ function Details({ pipeline, step, onSelect }) {
       {step.status === 'waiting' && !step.appliedFix && !running && blocker && (
         <p className="text-sm text-ink-muted">
           This step didn’t run because{' '}
-          <button type="button" className="font-medium text-ink underline underline-offset-4" onClick={() => onSelect(blocker.id)}>
+          <button type="button" className="font-semibold text-tint-text" onClick={() => onSelect(blocker.id)}>
             {blocker.name}
           </button>{' '}
           failed.
@@ -108,7 +108,7 @@ function Details({ pipeline, step, onSelect }) {
         </Notice>
       )}
 
-      <dl className="grid grid-cols-3 divide-x divide-line rounded-xl border border-line">
+      <dl className="grid grid-cols-3 divide-x divide-line rounded-2xl bg-paper">
         <Stat label="Rows in" value={step.rowsIn != null ? formatNumber(step.rowsIn) : '–'} />
         <Stat
           label="Rows out"
@@ -156,9 +156,9 @@ function Stat({ label, value, fail }) {
 }
 
 function Notice({ tone, title, children }) {
-  const tones = { ok: 'border-ok/30 bg-ok-soft', warn: 'border-warn/30 bg-warn-soft' }
+  const tones = { ok: 'bg-ok-soft', warn: 'bg-warn-soft' }
   return (
-    <div role="status" className={`space-y-3 rounded-xl border px-4 py-3 text-sm ${tones[tone]}`}>
+    <div role="status" className={`space-y-3 rounded-2xl px-4 py-3.5 text-sm ${tones[tone]}`}>
       <p className="font-semibold">{title}</p>
       {children}
     </div>

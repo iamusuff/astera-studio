@@ -78,7 +78,7 @@ function DrillDownLinks() {
         <Link
           key={r.id}
           to={`/dashboard/region/${r.id}`}
-          className="inline-flex min-h-11 items-center rounded-md px-2 text-[13px] font-medium underline-offset-4 hover:bg-sunken hover:underline pointer-fine:min-h-8"
+          className="inline-flex min-h-11 items-center rounded-lg px-2 text-[13px] font-semibold text-tint-text transition-colors hover:bg-tint-soft pointer-fine:min-h-8"
         >
           {r.name}
         </Link>

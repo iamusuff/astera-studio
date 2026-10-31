@@ -45,7 +45,7 @@ export default function ChatContextRail() {
         <h2 className="text-sm font-semibold">Answering from</h2>
         <Link
           to={`/pipelines/${sales.id}`}
-          className="mt-3 block rounded-lg border border-line bg-surface p-3 transition-colors hover:border-line-strong"
+          className="mt-3 block rounded-[var(--radius-group)] bg-surface shadow-[var(--shadow-card)] p-3.5 transition-transform active:scale-[0.98]"
         >
           <span className="flex items-center justify-between gap-2">
             <span className="text-sm font-medium">{sales.name}</span>

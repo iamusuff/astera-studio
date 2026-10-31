@@ -9,6 +9,7 @@ import PipelinesScreen from './features/pipelines/PipelinesScreen.jsx'
 import PipelineDetailScreen from './features/pipelines/PipelineDetailScreen.jsx'
 import DevicePreview from './features/preview/DevicePreview.jsx'
 import { AppStoreProvider } from './state/AppStore.jsx'
+import { ThemeProvider, useTheme } from './state/theme.jsx'
 import { useIsDesktop } from './hooks/useMediaQuery.js'
 
 // HashRouter (#/chat, #/dashboard, ...) is used instead of normal URLs because
@@ -16,6 +17,7 @@ import { useIsDesktop } from './hooks/useMediaQuery.js'
 // opened straight from the zip.
 export default function App() {
   return (
+    <ThemeProvider>
     <AppStoreProvider>
       <HashRouter>
         <Routes>
@@ -36,6 +38,7 @@ export default function App() {
 
       <AppToaster />
     </AppStoreProvider>
+    </ThemeProvider>
   )
 }
 
@@ -46,8 +49,10 @@ export default function App() {
 */
 function AppToaster() {
   const isDesktop = useIsDesktop()
+  const { theme } = useTheme()
   return (
     <Toaster
+      theme={theme}
       position={isDesktop ? 'bottom-right' : 'top-center'}
       offset={{ top: '16px', bottom: '24px', right: '24px' }}
       mobileOffset={{ top: 'calc(env(safe-area-inset-top, 0px) + 8px)', left: '12px', right: '12px' }}

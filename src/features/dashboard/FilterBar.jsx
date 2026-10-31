@@ -26,10 +26,10 @@ export default function FilterBar() {
 
   return (
     <>
-      <Button variant="secondary" onClick={() => setOpen(true)} className="w-full justify-start">
+      <Button variant="gray" onClick={() => setOpen(true)} className="w-full justify-start font-medium">
         <SlidersHorizontal className="size-4" aria-hidden="true" />
         <span className="truncate">{filterLabel(filters).replace(/^./, (c) => c.toUpperCase())}</span>
-        <span className="ml-auto text-sm font-normal text-ink-muted">Change</span>
+        <span className="ml-auto text-sm font-semibold text-tint-text">Change</span>
       </Button>
       <Sheet
         open={open}
@@ -73,7 +73,7 @@ function FilterControls({ filters, stacked = false }) {
             id="region-filter"
             value={filters.region}
             onChange={(e) => setFilter('region', e.target.value)}
-            className={`h-11 appearance-none rounded-lg border border-line-strong bg-surface text-ink pr-10 pl-3.5 text-[15px] pointer-fine:h-9 pointer-fine:text-sm ${stacked ? 'w-full' : 'min-w-40'}`}
+            className={`h-11 appearance-none rounded-xl bg-sunken font-medium text-ink pr-10 pl-3.5 text-[15px] pointer-fine:h-9 pointer-fine:text-sm ${stacked ? 'w-full' : 'min-w-40'}`}
           >
             {REGION_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>

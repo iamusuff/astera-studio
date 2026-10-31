@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 
-import { C } from '../../components/charts/chartTheme.js'
+import { useChartColors } from '../../components/charts/chartTheme.js'
 import { StatusIcon } from '../../components/ui/StatusBadge.jsx'
 import { STEP_KINDS } from '../../data/pipelines.js'
 import { formatCompactNumber, formatNumber } from '../../lib/format.js'
@@ -15,14 +15,16 @@ import { edges, gridLayout, stepIcon } from './pipelineGraph.js'
   its own box; the page itself never does.
 */
 
-const EDGE = {
+const edgeStyles = (C) => ({
   succeeded: { stroke: C.series, dash: null },
-  running: { stroke: '#1f5bb8', dash: '6 5', animate: true },
+  running: { stroke: C.run, dash: '6 5', animate: true },
   failed: { stroke: C.fail, dash: '5 4' },
-  waiting: { stroke: '#c3cbd2', dash: '4 4' },
-}
+  waiting: { stroke: C.waiting, dash: '4 4' },
+})
 
 export default function FlowDiagram({ pipeline, selectedId, onSelect }) {
+  const C = useChartColors()
+  const EDGE = edgeStyles(C)
   const { positions, columns, rows } = gridLayout(pipeline)
   const containerRef = useRef(null)
   const nodeRefs = useRef(new Map())
@@ -66,7 +68,7 @@ export default function FlowDiagram({ pipeline, selectedId, onSelect }) {
     <div className="overflow-x-auto">
       <div
         ref={containerRef}
-        className="relative grid gap-x-12 gap-y-8 p-5"
+        className="relative grid gap-x-12 gap-y-8 p-6"
         style={{
           gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
           gridTemplateRows: `repeat(${rows}, auto)`,
@@ -94,8 +96,8 @@ export default function FlowDiagram({ pipeline, selectedId, onSelect }) {
                     y={p.label.y}
                     textAnchor={p.label.anchor}
                     fontSize="12"
-                    fill={p.from.rowsOut === 0 ? '#8f5b00' : C.inkMuted}
-                    stroke="#f4f6f7"
+                    fill={p.from.rowsOut === 0 ? C.warn : C.inkMuted}
+                    stroke={C.surface}
                     strokeWidth="4"
                     paintOrder="stroke"
                     className="tabular-nums"
@@ -133,9 +135,9 @@ export default function FlowDiagram({ pipeline, selectedId, onSelect }) {
 }
 
 const NODE = {
-  succeeded: 'border-line bg-surface',
-  running: 'border-run bg-run-soft/50',
-  failed: 'border-fail bg-fail-soft/60',
+  succeeded: 'border-transparent bg-surface shadow-[var(--shadow-card)]',
+  running: 'border-run-dot/60 bg-surface shadow-[var(--shadow-card)]',
+  failed: 'border-fail-dot/70 bg-surface shadow-[var(--shadow-card)]',
   waiting: 'border-dashed border-line-strong bg-paper',
 }
 
@@ -149,9 +151,9 @@ function FlowNode({ step, selected, onSelect, nodeRef }) {
       type="button"
       onClick={() => onSelect(step.id)}
       aria-current={selected ? 'step' : undefined}
-      className={`flex h-full min-h-28 w-full flex-col gap-1.5 rounded-lg border p-3 text-left transition-[border-color,box-shadow] ${
+      className={`flex h-full min-h-28 w-full flex-col gap-1.5 rounded-2xl border p-3.5 text-left transition-[border-color,box-shadow] ${
         NODE[step.status]
-      } ${selected ? 'border-ink shadow-[0_0_0_1px_var(--color-ink)]' : 'hover:border-line-strong'}`}
+      } ${selected ? 'border-tint shadow-[0_0_0_3px_var(--color-tint-soft)]' : 'hover:border-line-strong'}`}
     >
       <span className="flex items-center justify-between gap-2 text-xs text-ink-muted">
         <span className="flex items-center gap-1.5">
@@ -160,7 +162,7 @@ function FlowNode({ step, selected, onSelect, nodeRef }) {
         </span>
         <StatusIcon status={step.status} className="size-3.5" />
       </span>
-      <span className={`line-clamp-2 text-sm leading-snug font-medium ${step.status === 'waiting' ? 'text-ink-muted' : ''}`}>
+      <span className={`line-clamp-2 text-[13px] leading-snug font-semibold ${step.status === 'waiting' ? 'text-ink-muted' : ''}`}>
         {step.name}
       </span>
       <span className="mt-auto truncate text-xs text-ink-muted" title={step.target}>

@@ -16,7 +16,7 @@ import { useIsPhone, useMediaQuery } from '../../hooks/useMediaQuery.js'
 import { formatPercent } from '../../lib/format.js'
 import ChartLegend from './ChartLegend.jsx'
 import ChartTooltip from './ChartTooltip.jsx'
-import { axisProps, axisTick, C, percentTicks } from './chartTheme.js'
+import { axisProps as axisPropsFor, axisTick, percentTicks, useChartColors } from './chartTheme.js'
 
 /*
   Draws a chart from a small "spec" object, so chat answers and dashboard tiles
@@ -36,6 +36,8 @@ import { axisProps, axisTick, C, percentTicks } from './chartTheme.js'
 */
 export default function ChartView({ spec, height = 260, onSelect }) {
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+  const C = useChartColors()
+  const axisProps = axisPropsFor(C)
   const isPhone = useIsPhone()
   // Long category names don't fit under narrow columns on a phone, so simple bar
   // charts turn sideways there: names on the left, bars running right.
@@ -81,10 +83,10 @@ export default function ChartView({ spec, height = 260, onSelect }) {
         {xAxis}
         {yAxis}
         {tooltip((row) => `${formatPercent(row.value / row.target)} of target`)}
-        <Bar dataKey="target" name="Target" radius={[3, 3, 0, 0]} maxBarSize={22} {...animate}>
+        <Bar dataKey="target" name="Target" radius={[6, 6, 2, 2]} maxBarSize={22} {...animate}>
           {spec.rows.map((row) => fill(row, C.seriesMuted))}
         </Bar>
-        <Bar dataKey="value" name={spec.valueLabel} radius={[3, 3, 0, 0]} maxBarSize={22} {...animate}>
+        <Bar dataKey="value" name={spec.valueLabel} radius={[6, 6, 2, 2]} maxBarSize={22} {...animate}>
           {spec.rows.map((row) => fill(row, row.flagged ? C.fail : C.series))}
         </Bar>
       </BarChart>
@@ -107,7 +109,7 @@ export default function ChartView({ spec, height = 260, onSelect }) {
         <YAxis {...axisProps} axisLine={false} width={48} domain={[0, top]} ticks={ticks} tickFormatter={axisTick('percent')} />
         {tooltip()}
         <ReferenceLine y={1} stroke={C.ink} strokeDasharray="4 3" ifOverflow="extendDomain" />
-        <Bar dataKey="value" name={spec.valueLabel} radius={[3, 3, 0, 0]} maxBarSize={36} {...animate}>
+        <Bar dataKey="value" name={spec.valueLabel} radius={[6, 6, 2, 2]} maxBarSize={36} {...animate}>
           {spec.rows.map((row) => fill(row, row.flagged ? C.fail : C.series))}
         </Bar>
       </BarChart>
@@ -127,8 +129,8 @@ export default function ChartView({ spec, height = 260, onSelect }) {
         {yAxis}
         {tooltip()}
         {spec.reference && <ReferenceLine y={spec.reference} stroke={C.ink} strokeDasharray="4 3" />}
-        <Bar dataKey="a" name={spec.series[0].label} fill={C.seriesMuted} radius={[3, 3, 0, 0]} maxBarSize={22} {...animate} />
-        <Bar dataKey="b" name={spec.series[1].label} fill={C.series} radius={[3, 3, 0, 0]} maxBarSize={22} {...animate} />
+        <Bar dataKey="a" name={spec.series[0].label} fill={C.seriesMuted} radius={[6, 6, 2, 2]} maxBarSize={22} {...animate} />
+        <Bar dataKey="b" name={spec.series[1].label} fill={C.series} radius={[6, 6, 2, 2]} maxBarSize={22} {...animate} />
       </BarChart>
     )
     legend = [
@@ -146,7 +148,7 @@ export default function ChartView({ spec, height = 260, onSelect }) {
         <YAxis {...axisProps} type="category" dataKey="label" axisLine={{ stroke: C.line }} width={88} interval={0} />
         {tooltip()}
         {spec.reference != null && <ReferenceLine x={spec.reference} stroke={C.ink} strokeDasharray="4 3" />}
-        <Bar dataKey="value" name={spec.valueLabel} radius={[0, 3, 3, 0]} maxBarSize={22} {...animate}>
+        <Bar dataKey="value" name={spec.valueLabel} radius={[2, 6, 6, 2]} maxBarSize={22} {...animate}>
           {spec.rows.map((row) => fill(row, row.flagged ? C.fail : C.series))}
         </Bar>
       </BarChart>
@@ -169,7 +171,7 @@ export default function ChartView({ spec, height = 260, onSelect }) {
         )}
         {tooltip()}
         {spec.reference != null && <ReferenceLine y={spec.reference} stroke={C.ink} strokeDasharray="4 3" />}
-        <Bar dataKey="value" name={spec.valueLabel} radius={[3, 3, 0, 0]} maxBarSize={36} {...animate}>
+        <Bar dataKey="value" name={spec.valueLabel} radius={[6, 6, 2, 2]} maxBarSize={36} {...animate}>
           {spec.rows.map((row) => fill(row, row.flagged ? C.fail : C.series))}
         </Bar>
       </BarChart>
@@ -190,7 +192,7 @@ export default function ChartView({ spec, height = 260, onSelect }) {
         cy={cy}
         r={3.5}
         fill={payload.value < payload.target ? C.fail : C.series}
-        stroke="#fff"
+        stroke={C.surface}
         strokeWidth={1.5}
       />
     )

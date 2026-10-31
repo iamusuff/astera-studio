@@ -25,7 +25,7 @@ export default function MessageList({ messages }) {
     <ol className="space-y-8" aria-label="Conversation">
       {messages.map((m) => (
         <li key={m.id} ref={m === last ? lastRef : null} className={`scroll-mt-4 space-y-4 ${m === last ? 'min-h-[calc(100dvh-14rem)]' : ''}`}>
-          <p className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-sunken px-4 py-2.5 break-words">{m.question}</p>
+          <p className="ml-auto w-fit max-w-[85%] rounded-[20px] rounded-br-[6px] bg-tint px-4 py-2.5 break-words text-white">{m.question}</p>
           {m.status === 'thinking' && <Thinking answerId={m.answerId} />}
           {m.status === 'done' && (m.answerId ? <AnswerMessage answerId={m.answerId} /> : <NoAnswer />)}
           {m === last && m.status === 'done' && m.answerId && (

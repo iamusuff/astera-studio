@@ -1,52 +1,158 @@
 @import 'tailwindcss';
 
-/*
-  Design tokens for Astera Studio.
+/* Dark mode follows a class on <html> (set from the device setting or the
+   Appearance switch), not only the media query, so people can override it. */
+@custom-variant dark (&:where(.dark, .dark *));
 
-  Principle: color means status. The interface is neutral (paper, ink, lines);
-  color only appears when it carries meaning (a pipeline's state, a missed target,
-  stale data). Tailwind's default palette is switched off so every color in the
-  app has to come from this list.
+/*
+  Design tokens: Apple's system palette.
+
+  Light: grouped grey background, white cards, near-black text, iOS blue tint.
+  Dark:  true black background, #1C1C1E cards, like iOS dark mode.
+
+  Rules
+  - Blue (tint) means "you can tap this". Status colors mean status only:
+    green succeeded, indigo running, red failed or missed, orange stale.
+  - Text colors use Apple's accessible variants, so every text/background
+    pair passes WCAG AA (checked with axe-core in both themes).
+  - Glass is used only for chrome (bars, tab bar, sidebar, banners), never
+    behind numbers or charts, and turns solid with "Reduce Transparency".
 */
 @theme {
   --color-*: initial;
   --color-white: #ffffff;
+  --color-black: #000000;
 
-  /* Neutrals */
-  --color-paper: #f4f6f7;        /* app background, cool, not cream */
-  --color-surface: #ffffff;      /* panels, sheets, chart areas */
-  --color-sunken: #eceff1;       /* inputs, segmented controls, quiet fills */
-  --color-ink: #16202a;          /* primary text, primary buttons */
-  --color-ink-muted: #56626e;    /* secondary text (AA on paper and surface) */
-  --color-ink-faint: #8b959f;    /* decorative only: icons, disabled, never body text */
-  --color-line: #dde2e6;         /* hairlines and dividers */
-  --color-line-strong: #c3cbd2;  /* control borders, the pipe connector */
+  --color-paper: #f2f2f7; /* systemGroupedBackground */
+  --color-surface: #ffffff; /* cards, lists, sheets */
+  --color-raised: #ffffff; /* segmented-control thumb, popovers */
+  --color-sunken: #e9e9ee; /* fills: tracks, inputs, quiet buttons */
+  --color-ink: #1d1d1f; /* label */
+  --color-ink-muted: #636366; /* secondary label (AA on white, paper and fills) */
+  --color-ink-faint: #aeaeb2; /* tertiary: icons and decoration only */
+  --color-line: #e2e2e7; /* separators */
+  --color-line-strong: #c7c7cc;
 
-  /* Status: the only saturated colors in the app */
-  --color-ok: #1d7a4c;           /* succeeded */
-  --color-ok-soft: #e3f2ea;
-  --color-run: #1f5bb8;          /* running */
-  --color-run-soft: #e6eefa;
-  --color-fail: #b83228;         /* failed, missed target */
-  --color-fail-soft: #fbe9e7;
-  --color-warn: #8f5b00;         /* stale data */
-  --color-warn-soft: #fcf1d9;
-  /* "Scheduled" is deliberately not colored: nothing has happened yet. It uses ink-muted + sunken. */
+  --color-tint: #0071e3; /* filled buttons (white text passes AA) */
+  --color-tint-text: #005bbf; /* blue text and links (AA even on tinted fills) */
+  --color-tint-soft: rgb(0 113 227 / 0.1); /* tinted buttons, selection */
 
-  /* Chart series: slate, so status red stays the loudest thing on screen */
-  --color-series: #3b5266;
-  --color-series-muted: #b7c1ca;
+  --color-ok: #1e7f3b;
+  --color-ok-dot: #34c759;
+  --color-ok-soft: rgb(52 199 89 / 0.14);
+  --color-run: #5856d6;
+  --color-run-dot: #5856d6;
+  --color-run-soft: rgb(88 86 214 / 0.12);
+  --color-fail: #c00013;
+  --color-fail-dot: #ff3b30;
+  --color-fail-soft: rgb(255 59 48 / 0.11);
+  --color-warn: #b25000;
+  --color-warn-dot: #ff9500;
+  --color-warn-soft: rgb(255 149 0 / 0.14);
 
-  /* Type */
-  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --color-series: #0071e3;
+  --color-series-muted: #c7c7cc;
 
-  /* Motion: one curve for UI responses (strong ease-out) */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', system-ui, 'Segoe UI', sans-serif;
+
+  --radius-card: 20px; /* widgets and chart cards (iOS widget corner) */
+  --radius-group: 14px; /* inset grouped lists */
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04), 0 6px 20px rgb(0 0 0 / 0.045);
+  --shadow-float: 0 10px 34px rgb(0 0 0 / 0.14), 0 2px 6px rgb(0 0 0 / 0.06);
+
   --ease-out-ui: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.dark {
+  color-scheme: dark;
+  --color-paper: #000000;
+  --color-surface: #1c1c1e;
+  --color-raised: #3a3a3c;
+  --color-sunken: #2c2c2e;
+  --color-ink: #f5f5f7;
+  --color-ink-muted: #98989d;
+  --color-ink-faint: #636366;
+  --color-line: #2c2c2e;
+  --color-line-strong: #48484a;
+
+  --color-tint: #0071e3;
+  --color-tint-text: #4da6ff;
+  --color-tint-soft: rgb(41 151 255 / 0.16);
+
+  --color-ok: #30d158;
+  --color-ok-dot: #30d158;
+  --color-ok-soft: rgb(48 209 88 / 0.16);
+  --color-run: #8e8cff;
+  --color-run-dot: #7d7aff;
+  --color-run-soft: rgb(125 122 255 / 0.18);
+  --color-fail: #ff6961;
+  --color-fail-dot: #ff453a;
+  --color-fail-soft: rgb(255 69 58 / 0.16);
+  --color-warn: #ffb340;
+  --color-warn-dot: #ff9f0a;
+  --color-warn-soft: rgb(255 159 10 / 0.16);
+
+  --color-series: #0a84ff;
+  --color-series-muted: #48484a;
+
+  --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.05);
+  --shadow-float: 0 10px 34px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+
+/*
+  Materials ("Liquid Glass", used sparingly).
+  .glass-bar    sticky navigation bars and the sidebar: light frosting
+  .glass-float  floating controls (tab bar, chat input, banners): thicker,
+                with a soft shadow and a bright top edge that catches light
+*/
+@utility glass-bar {
+  background: rgb(249 249 251 / 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  .dark & {
+    background: rgb(22 22 24 / 0.72);
+  }
+}
+
+@utility glass-float {
+  background: rgb(255 255 255 / 0.74);
+  backdrop-filter: saturate(190%) blur(24px);
+  -webkit-backdrop-filter: saturate(190%) blur(24px);
+  box-shadow:
+    var(--shadow-float),
+    inset 0 1px 0 rgb(255 255 255 / 0.85),
+    inset 0 0 0 0.5px rgb(0 0 0 / 0.06);
+  .dark & {
+    background: rgb(40 40 44 / 0.72);
+    box-shadow:
+      var(--shadow-float),
+      inset 0 1px 0 rgb(255 255 255 / 0.1);
+  }
+}
+
+/* Accessibility setting on iPhone, iPad and Mac: no translucency, solid surfaces. */
+@media (prefers-reduced-transparency: reduce) {
+  .glass-bar,
+  .glass-float {
+    background: var(--color-surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* A running pipeline's connector: dashes flow toward the next step. */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -11;
+  }
 }
 
 @layer base {
   html {
-    /* Keyboard focus and scrollIntoView never land under the sticky tab bar or chat input */
+    /* Keyboard focus and scrollIntoView never land under sticky bars */
+    scroll-padding-top: 4rem;
     scroll-padding-bottom: 9rem;
     /* Stops pull-to-refresh and scroll chaining from fighting the app */
     overscroll-behavior-y: none;
@@ -56,10 +162,15 @@
   body {
     @apply bg-paper text-ink font-sans antialiased;
     font-size: 15px;
-    line-height: 1.5;
-    /* Real tabular figures from Plex, so numbers in KPIs and tables line up */
-    font-feature-settings: 'tnum' 1;
+    line-height: 1.47;
+    letter-spacing: -0.01em;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Numbers line up in KPIs, tables and step counts */
+  table,
+  dd {
+    font-variant-numeric: tabular-nums;
   }
 
   /* Controls: no double-tap zoom delay, no text selection on long-press */
@@ -82,18 +193,11 @@
     font-size: 16px;
   }
 
-  /* Keyboard focus is always visible; mouse/touch focus is not */
+  /* Keyboard focus: Apple's blue focus ring, never shown for mouse or touch */
   :focus-visible {
-    outline: 2px solid var(--color-ink);
+    outline: 3px solid color-mix(in srgb, var(--color-tint) 55%, transparent);
     outline-offset: 2px;
-    border-radius: 6px;
-  }
-}
-
-/* A running pipeline's connector: dashes flow toward the next step. */
-@keyframes dash {
-  to {
-    stroke-dashoffset: -11;
+    border-radius: 10px;
   }
 }
 

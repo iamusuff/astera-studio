@@ -18,9 +18,9 @@ export default function PinnedAnswers() {
         Pinned from chat
       </h2>
       {state.pins.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-line-strong px-4 py-5 text-sm text-ink-muted">
+        <p className="rounded-[var(--radius-group)] border border-dashed border-line-strong px-4 py-5 text-sm text-ink-muted">
           Answers you pin in{' '}
-          <Link to="/chat" className="font-medium text-ink underline underline-offset-4">
+          <Link to="/chat" className="font-semibold text-tint-text">
             Chat
           </Link>{' '}
           appear here and refresh with their pipeline.

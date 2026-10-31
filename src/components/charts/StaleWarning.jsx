@@ -18,12 +18,12 @@ export default function StaleWarning({ pipeline, compact = false, affected = 'th
   return (
     <div
       role="status"
-      className="flex flex-col gap-3 rounded-lg border border-warn/25 bg-warn-soft px-3.5 py-3 sm:flex-row sm:items-center"
+      className="flex flex-col gap-3 rounded-2xl bg-warn-soft px-4 py-3.5 sm:flex-row sm:items-center"
     >
       <div className="flex min-w-0 flex-1 gap-2.5">
-        <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warn" strokeWidth={2} aria-hidden="true" />
+        <TriangleAlert className="mt-0.5 size-[18px] shrink-0 text-warn-dot" strokeWidth={2.2} aria-hidden="true" />
         <p className="text-sm text-ink">
-          <span className="font-medium">Data may be out of date.</span>{' '}
+          <span className="font-semibold">Data may be out of date.</span>{' '}
           {compact ? (
             <>{pipeline.name} failed at {formatClock(pipeline.lastRun.finishedAt)}.</>
           ) : (
@@ -34,7 +34,7 @@ export default function StaleWarning({ pipeline, compact = false, affected = 'th
           )}
         </p>
       </div>
-      <ButtonLink to={to} variant="secondary" size="sm" className="self-start sm:self-auto">
+      <ButtonLink to={to} variant="onColor" size="sm" className="self-start sm:self-auto">
         Review fix
       </ButtonLink>
     </div>

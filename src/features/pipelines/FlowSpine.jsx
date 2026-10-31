@@ -111,15 +111,15 @@ function StepCard({ step, index, total, selected, onSelect, sides, selectedId })
   const failed = step.status === 'failed'
   return (
     <div
-      className={`my-1 rounded-xl border bg-surface transition-colors ${
-        selected ? 'border-ink ring-1 ring-ink' : failed ? 'border-fail/50' : 'border-line'
-      } ${step.status === 'waiting' ? 'bg-surface/60' : ''}`}
+      className={`my-1 rounded-2xl border bg-surface shadow-[var(--shadow-card)] transition-[border-color,box-shadow] ${
+        selected ? 'border-tint ring-4 ring-tint-soft' : failed ? 'border-fail-dot/50' : 'border-transparent'
+      } ${step.status === 'waiting' ? 'border-dashed !border-line-strong bg-paper shadow-none' : ''}`}
     >
       <button
         type="button"
         onClick={() => onSelect(step.id)}
         aria-current={selected ? 'step' : undefined}
-        className="flex w-full items-start gap-3 rounded-xl px-4 py-3 text-left"
+        className="flex w-full items-start gap-3 rounded-2xl px-4 py-3.5 text-left transition-transform active:scale-[0.985]"
       >
         <span className="min-w-0 flex-1">
           <span className="block text-xs text-ink-muted">

@@ -18,7 +18,7 @@ export default function SuggestionChips({ ids }) {
               type="button"
               disabled={thinking}
               onClick={() => ask(question, id)}
-              className="min-h-11 rounded-full border border-line-strong bg-surface px-4 py-2 text-left text-sm transition-[transform,background-color] duration-150 hover:bg-sunken active:scale-[0.97] disabled:opacity-45 pointer-fine:min-h-9 pointer-fine:py-1.5"
+              className="min-h-11 rounded-full bg-tint-soft px-4 py-2 text-left text-sm font-semibold text-tint-text transition-[transform,background-color] duration-200 ease-out-ui hover:bg-tint-soft/70 active:scale-[0.96] disabled:opacity-40 pointer-fine:min-h-9 pointer-fine:py-1.5"
             >
               {question}
             </button>
