@@ -22,7 +22,7 @@ export const PERIODS = [
  *   id, name, code,                 // code matches region_code in the sales_orders table
  *   revenue: number[9],             // monthly revenue in USD, Jan..Sep 2026
  *   targets: { q1, q2, q3 },        // quarterly revenue targets (from the Finance Excel file)
- *   avgOrderValue: number,          // USD, used to derive order counts
+ *   avgOrderValue: number,          // USD in Q3, used to derive order counts
  *   returnRate: { q1, q2, q3 },     // share of orders returned
  *   stores: [{ name, share }],      // share of the region's revenue
  *   categoryMix: { [categoryId]: share }

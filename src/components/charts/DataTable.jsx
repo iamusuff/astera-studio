@@ -6,7 +6,7 @@ import { formatValue } from './chartTheme.js'
   Wide tables scroll sideways inside their own box, never the whole page.
 */
 // compact: short money ($4.18M) so four columns fit a 375px phone without scrolling.
-export default function DataTable({ columns, rows, caption, flagKey, compact = false }) {
+export default function DataTable({ columns, rows, caption, flagKey, flagLabel = 'Below target', compact = false }) {
   const fmt = (format) => (compact && format === 'currency' ? 'currency-compact' : format)
   return (
     <div className="overflow-x-auto px-2 md:px-3">
@@ -29,7 +29,7 @@ export default function DataTable({ columns, rows, caption, flagKey, compact = f
                   <th key={col.key} scope="row" className="py-2.5 pr-3 text-left font-medium">
                     {row[col.key]}
                     {flagKey && row[flagKey] && (
-                      <span className="block text-[13px] font-normal text-fail">{compact ? 'Missed' : 'Below target'}</span>
+                      <span className="block text-[13px] font-normal text-fail">{compact && flagLabel === 'Below target' ? 'Missed' : flagLabel}</span>
                     )}
                   </th>
                 ) : (

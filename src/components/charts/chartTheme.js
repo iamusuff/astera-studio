@@ -15,7 +15,8 @@ export const C = {
 
 // Axis labels are shorter than prose: $1.2M, $800K, 90%
 export function axisTick(format) {
-  if (format === 'percent') return (v) => `${Math.round(v * 100)}%`
+  if (format === 'percent') return (v) => `${+(v * 100).toFixed(1)}%`
+  if (format === 'weeks') return (v) => `${v} wk`
   return (v) => {
     if (Math.abs(v) >= 1e6) return `$${+(v / 1e6).toFixed(1)}M`
     if (Math.abs(v) >= 1e3) return `$${Math.round(v / 1e3)}K`
@@ -34,6 +35,8 @@ export function formatValue(value, format) {
       const pts = (value * 100).toFixed(1)
       return `${value >= 0 ? '+' : '−'}${Math.abs(pts)} pts`
     }
+    case 'weeks':
+      return `${value.toFixed(1)} weeks`
     case 'currency-compact':
       return formatCurrencyCompact(value)
     case 'currency':
@@ -41,6 +44,13 @@ export function formatValue(value, format) {
     default:
       return value
   }
+}
+
+// Round axis steps for small percentages (2.5%, 5%, 7.5%...) instead of 3.5%, 7%, 10.5%.
+export function percentTicks(max) {
+  const step = [0.01, 0.02, 0.025, 0.05, 0.1, 0.25].find((s) => max / s <= 5) ?? 0.5
+  const top = Math.ceil(max / step) * step
+  return Array.from({ length: Math.round(top / step) + 1 }, (_, i) => +(i * step).toFixed(4))
 }
 
 export const axisProps = {

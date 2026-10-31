@@ -20,8 +20,14 @@ function targetOf(region, period) {
   return sum(period.quarters.map((q) => region.targets[q]))
 }
 
+// Order value drifts a little each quarter (Q3 is the reference), like real baskets do.
+const ORDER_VALUE_DRIFT = { q1: 0.982, q2: 0.991, q3: 1 }
+
 function ordersOf(region, period) {
-  return Math.round(revenueOf(region, period) / region.avgOrderValue)
+  return period.quarters.reduce((total, q) => {
+    const revenue = sum(getPeriod(q).months.map((m) => region.revenue[m]))
+    return total + Math.round(revenue / (region.avgOrderValue * ORDER_VALUE_DRIFT[q]))
+  }, 0)
 }
 
 function returnedOrdersOf(region, period) {

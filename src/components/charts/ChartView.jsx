@@ -12,11 +12,11 @@ import {
   YAxis,
 } from 'recharts'
 
-import { useMediaQuery } from '../../hooks/useMediaQuery.js'
+import { useIsPhone, useMediaQuery } from '../../hooks/useMediaQuery.js'
 import { formatPercent } from '../../lib/format.js'
 import ChartLegend from './ChartLegend.jsx'
 import ChartTooltip from './ChartTooltip.jsx'
-import { axisProps, axisTick, C } from './chartTheme.js'
+import { axisProps, axisTick, C, percentTicks } from './chartTheme.js'
 
 /*
   Draws a chart from a small "spec" object, so chat answers and dashboard tiles
@@ -26,17 +26,35 @@ import { axisProps, axisTick, C } from './chartTheme.js'
     attainment      rows: { label, value, flagged }           % of target with a 100% line
     grouped         rows: { label, a, b }, series: [a, b]     two periods or regions side by side
     line-vs-target  rows: { label, value, target }            monthly trend with a target line
+    bars            rows: { label, value, flagged }           one value per item, optional reference line
+
+  Rows can be "dimmed" to keep context while a filter focuses on one item.
 
   Color rule: slate for data, grey for comparison, red only for "below target".
-  onSelect(row) makes bars tappable (used for drill-down on the dashboard).
+  onSelect(row) makes a whole column tappable, not just the thin bar, so it is
+  an easy target on a phone (used for drill-down on the dashboard).
 */
 export default function ChartView({ spec, height = 260, onSelect }) {
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+  const isPhone = useIsPhone()
+  // Long category names don't fit under narrow columns on a phone, so simple bar
+  // charts turn sideways there: names on the left, bars running right.
+  const horizontal =
+    spec.kind === 'bars' && isPhone && Math.max(...spec.rows.map((r) => r.label.length)) > 7
   const common = {
     data: spec.rows,
     margin: { top: 8, right: 8, bottom: 0, left: 0 },
     accessibilityLayer: true,
+    ...(onSelect && {
+      onClick: (state) => {
+        const index = state?.activeTooltipIndex ?? state?.activeIndex
+        if (index != null && spec.rows[index]) onSelect(spec.rows[index])
+      },
+      style: { cursor: 'pointer' },
+    }),
   }
+  // Faded rows stay visible for comparison while a filter focuses on one item.
+  const fill = (row, color) => <Cell key={row.label} fill={color} fillOpacity={row.dimmed ? 0.3 : 1} />
   const animate = { isAnimationActive: !reduceMotion, animationDuration: 450 }
   const yAxis = (
     <YAxis {...axisProps} axisLine={false} width={48} tickCount={4} tickFormatter={axisTick(spec.format)} />
@@ -50,9 +68,6 @@ export default function ChartView({ spec, height = 260, onSelect }) {
     />
   )
   const anyFlagged = spec.rows.some((r) => r.flagged)
-  const clickable = onSelect
-    ? { onClick: (data) => onSelect(data.payload ?? data), style: { cursor: 'pointer' } }
-    : {}
 
   let chart
   let legend
@@ -64,11 +79,11 @@ export default function ChartView({ spec, height = 260, onSelect }) {
         {xAxis}
         {yAxis}
         {tooltip((row) => `${formatPercent(row.value / row.target)} of target`)}
-        <Bar dataKey="target" name="Target" fill={C.seriesMuted} radius={[3, 3, 0, 0]} maxBarSize={22} {...animate} {...clickable} />
-        <Bar dataKey="value" name={spec.valueLabel} radius={[3, 3, 0, 0]} maxBarSize={22} {...animate} {...clickable}>
-          {spec.rows.map((row) => (
-            <Cell key={row.label} fill={row.flagged ? C.fail : C.series} />
-          ))}
+        <Bar dataKey="target" name="Target" radius={[3, 3, 0, 0]} maxBarSize={22} {...animate}>
+          {spec.rows.map((row) => fill(row, C.seriesMuted))}
+        </Bar>
+        <Bar dataKey="value" name={spec.valueLabel} radius={[3, 3, 0, 0]} maxBarSize={22} {...animate}>
+          {spec.rows.map((row) => fill(row, row.flagged ? C.fail : C.series))}
         </Bar>
       </BarChart>
     )
@@ -90,10 +105,8 @@ export default function ChartView({ spec, height = 260, onSelect }) {
         <YAxis {...axisProps} axisLine={false} width={48} domain={[0, top]} ticks={ticks} tickFormatter={axisTick('percent')} />
         {tooltip()}
         <ReferenceLine y={1} stroke={C.ink} strokeDasharray="4 3" ifOverflow="extendDomain" />
-        <Bar dataKey="value" name={spec.valueLabel} radius={[3, 3, 0, 0]} maxBarSize={36} {...animate} {...clickable}>
-          {spec.rows.map((row) => (
-            <Cell key={row.label} fill={row.flagged ? C.fail : C.series} />
-          ))}
+        <Bar dataKey="value" name={spec.valueLabel} radius={[3, 3, 0, 0]} maxBarSize={36} {...animate}>
+          {spec.rows.map((row) => fill(row, row.flagged ? C.fail : C.series))}
         </Bar>
       </BarChart>
     )
@@ -123,6 +136,49 @@ export default function ChartView({ spec, height = 260, onSelect }) {
     ]
   }
 
+  if (horizontal) {
+    chart = (
+      <BarChart {...common} layout="vertical" margin={{ top: 4, right: 16, bottom: 0, left: 0 }}>
+        <CartesianGrid horizontal={false} stroke={C.line} />
+        <XAxis {...axisProps} type="number" axisLine={false} tickCount={4} tickFormatter={axisTick(spec.format)} />
+        <YAxis {...axisProps} type="category" dataKey="label" axisLine={{ stroke: C.line }} width={88} interval={0} />
+        {tooltip()}
+        {spec.reference != null && <ReferenceLine x={spec.reference} stroke={C.ink} strokeDasharray="4 3" />}
+        <Bar dataKey="value" name={spec.valueLabel} radius={[0, 3, 3, 0]} maxBarSize={22} {...animate}>
+          {spec.rows.map((row) => fill(row, row.flagged ? C.fail : C.series))}
+        </Bar>
+      </BarChart>
+    )
+    legend = [
+      { label: spec.valueLabel, color: C.series },
+      ...(anyFlagged ? [{ label: spec.flaggedLabel, color: C.fail }] : []),
+      ...(spec.reference != null ? [{ label: spec.referenceLabel, color: C.ink, shape: 'dash' }] : []),
+    ]
+  } else if (spec.kind === 'bars') {
+    const ticks = spec.format === 'percent' ? percentTicks(Math.max(...spec.rows.map((r) => r.value))) : undefined
+    chart = (
+      <BarChart {...common}>
+        {grid}
+        {xAxis}
+        {ticks ? (
+          <YAxis {...axisProps} axisLine={false} width={48} domain={[0, ticks.at(-1)]} ticks={ticks} tickFormatter={axisTick('percent')} />
+        ) : (
+          yAxis
+        )}
+        {tooltip()}
+        {spec.reference != null && <ReferenceLine y={spec.reference} stroke={C.ink} strokeDasharray="4 3" />}
+        <Bar dataKey="value" name={spec.valueLabel} radius={[3, 3, 0, 0]} maxBarSize={36} {...animate}>
+          {spec.rows.map((row) => fill(row, row.flagged ? C.fail : C.series))}
+        </Bar>
+      </BarChart>
+    )
+    legend = [
+      { label: spec.valueLabel, color: C.series },
+      ...(anyFlagged ? [{ label: spec.flaggedLabel, color: C.fail }] : []),
+      ...(spec.reference != null ? [{ label: spec.referenceLabel, color: C.ink, shape: 'dash' }] : []),
+    ]
+  }
+
   if (spec.kind === 'line-vs-target') {
     // Months below target get a red dot: the pattern is visible without reading numbers.
     const dot = ({ cx, cy, payload }) => (
@@ -136,11 +192,20 @@ export default function ChartView({ spec, height = 260, onSelect }) {
         strokeWidth={1.5}
       />
     )
+    // A trend line doesn't need a zero baseline (bars do): zoom the axis to the data
+    // so the shape of the trend is visible.
     chart = (
       <LineChart {...common}>
         {grid}
-        {xAxis}
-        {yAxis}
+        <XAxis {...axisProps} dataKey="label" axisLine={{ stroke: C.line }} interval={0} padding={{ left: 14, right: 14 }} />
+        <YAxis
+          {...axisProps}
+          axisLine={false}
+          width={48}
+          tickCount={4}
+          domain={[(min) => Math.floor((min * 0.94) / 1e5) * 1e5, (max) => Math.ceil((max * 1.03) / 1e5) * 1e5]}
+          tickFormatter={axisTick(spec.format)}
+        />
         {tooltip()}
         <Line dataKey="target" name={spec.targetLabel} stroke={C.inkFaint} strokeDasharray="4 3" strokeWidth={1.5} dot={false} {...animate} />
         <Line dataKey="value" name={spec.valueLabel} stroke={C.series} strokeWidth={2} dot={dot} activeDot={{ r: 5 }} {...animate} />
@@ -156,7 +221,7 @@ export default function ChartView({ spec, height = 260, onSelect }) {
   return (
     <div>
       <ChartLegend items={legend} />
-      <div style={{ height }} className="mt-2">
+      <div style={{ height: horizontal ? spec.rows.length * 38 + 32 : height }} className="mt-2">
         <ResponsiveContainer width="100%" height="100%">
           {chart}
         </ResponsiveContainer>

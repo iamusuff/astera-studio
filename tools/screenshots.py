@@ -37,6 +37,17 @@ ROUTES = {
 }
 
 
+
+def tall_shot(pg, path):
+    """Full-page screenshot without the chart-resize artifact: grow the window to the
+    page height, let charts re-measure, then take a normal screenshot."""
+    size = pg.viewport_size
+    h = pg.evaluate("document.documentElement.scrollHeight")
+    pg.set_viewport_size({"width": size["width"], "height": h})
+    pg.wait_for_timeout(500)
+    pg.screenshot(path=path)
+    pg.set_viewport_size(size)
+
 def wait_for_port(port, timeout=20):
     start = time.time()
     while time.time() - start < timeout:
@@ -65,6 +76,7 @@ def main():
             browser = p.chromium.launch()
             for device, (w, h, touch) in DEVICES.items():
                 context = browser.new_context(
+                    reduced_motion="reduce",  # charts render instantly, so screenshots are never mid-animation
                     viewport={"width": w, "height": h},
                     device_scale_factor=2 if touch else 1,
                     has_touch=touch,
@@ -82,7 +94,7 @@ def main():
                     page.wait_for_load_state("networkidle")
                     page.wait_for_timeout(300)
                     path = OUT / f"{name}-{device}.png"
-                    page.screenshot(path=str(path), full_page=True)
+                    tall_shot(page, str(path))
                     print(f"saved {path.relative_to(ROOT)}")
                 context.close()
             browser.close()

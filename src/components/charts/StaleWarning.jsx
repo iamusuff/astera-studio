@@ -9,7 +9,8 @@ import { ButtonLink } from '../ui/Button.jsx'
   in plain words (the chart is showing older data), why (which pipeline failed,
   when), and gives one way forward (review the suggested fix).
 */
-export default function StaleWarning({ pipeline, compact = false }) {
+// affected: what to distrust, with its verb: "this chart shows", "revenue and orders show".
+export default function StaleWarning({ pipeline, compact = false, affected = 'this chart shows' }) {
   useNow()
   const failedStep = pipeline.steps.find((s) => s.status === 'failed')
   const to = `/pipelines/${pipeline.id}${failedStep ? `?step=${failedStep.id}` : ''}`
@@ -27,7 +28,7 @@ export default function StaleWarning({ pipeline, compact = false }) {
             <>{pipeline.name} failed at {formatClock(pipeline.lastRun.finishedAt)}.</>
           ) : (
             <>
-              {pipeline.name} failed at {formatClock(pipeline.lastRun.finishedAt)}, so this shows data from{' '}
+              {pipeline.name} failed at {formatClock(pipeline.lastRun.finishedAt)}, so {affected} data from{' '}
               {formatRelative(pipeline.lastSuccessAt)}.
             </>
           )}
