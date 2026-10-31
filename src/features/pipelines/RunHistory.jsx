@@ -23,7 +23,7 @@ export default function RunHistory({ pipeline }) {
             <span className="shrink-0 text-[13px] text-ink-muted tabular-nums">
               {run.finishedAt
                 ? formatDuration(new Date(run.finishedAt) - new Date(run.startedAt))
-                : 'Running'}
+                : 'Running…'}
             </span>
           </li>
         ))}

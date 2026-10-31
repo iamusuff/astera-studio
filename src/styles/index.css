@@ -46,6 +46,8 @@
 
 @layer base {
   html {
+    /* Keyboard focus and scrollIntoView never land under the sticky tab bar or chat input */
+    scroll-padding-bottom: 9rem;
     /* Stops pull-to-refresh and scroll chaining from fighting the app */
     overscroll-behavior-y: none;
     -webkit-text-size-adjust: 100%;

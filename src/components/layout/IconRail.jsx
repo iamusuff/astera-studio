@@ -9,7 +9,7 @@ import NavBadge, { useFailedCount } from './NavBadge.jsx'
 export default function IconRail() {
   const failed = useFailedCount()
   return (
-    <aside className="sticky top-0 hidden h-dvh w-[84px] shrink-0 flex-col items-center border-r border-line pt-[max(1.25rem,env(safe-area-inset-top,0px))] md:flex xl:hidden">
+    <aside aria-label="Sidebar" className="sticky top-0 hidden h-dvh w-[84px] shrink-0 flex-col items-center border-r border-line pt-[max(1.25rem,env(safe-area-inset-top,0px))] md:flex xl:hidden">
       <LogoMark />
 
       <nav aria-label="Main" className="mt-8 flex flex-col gap-1">

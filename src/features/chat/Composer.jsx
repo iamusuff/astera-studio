@@ -30,7 +30,7 @@ export default function Composer({ disabled }) {
           id="chat-question"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Ask about sales, targets or regions"
+          placeholder="Ask about sales, targets or regions…"
           autoComplete="off"
           enterKeyHint="send"
           className="h-10 min-w-0 flex-1 bg-transparent placeholder:text-ink-muted focus:outline-none"

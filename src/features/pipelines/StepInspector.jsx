@@ -100,7 +100,13 @@ function Details({ pipeline, step, onSelect }) {
         </p>
       )}
 
-      {step.status === 'running' && <p className="text-sm text-run">Running now.</p>}
+      {step.status === 'running' && <p className="text-sm text-run">Running now…</p>}
+
+      {step.status === 'succeeded' && step.rowsOut === 0 && (
+        <Notice tone="warn" title="Passed on no rows">
+          <p>This step finished without errors but produced nothing, so every step after it works on empty data. Check its settings.</p>
+        </Notice>
+      )}
 
       <dl className="grid grid-cols-3 divide-x divide-line rounded-xl border border-line">
         <Stat label="Rows in" value={step.rowsIn != null ? formatNumber(step.rowsIn) : '–'} />

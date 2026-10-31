@@ -7,6 +7,7 @@ import ChatContextRail from './ChatContextRail.jsx'
 import Composer from './Composer.jsx'
 import EmptyChat from './EmptyChat.jsx'
 import MessageList from './MessageList.jsx'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle.js'
 
 /*
   Layout per device:
@@ -15,6 +16,7 @@ import MessageList from './MessageList.jsx'
     desktop  the conversation plus a right rail with pinned answers and data sources
 */
 export default function ChatScreen() {
+  useDocumentTitle('Chat')
   const { state, actions } = useStore()
   const messages = state.chat
   const thinking = messages.some((m) => m.status === 'thinking')

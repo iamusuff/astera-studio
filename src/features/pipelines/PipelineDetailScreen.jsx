@@ -16,6 +16,7 @@ import FlowSpine from './FlowSpine.jsx'
 import { mainChain } from './pipelineGraph.js'
 import RunHistory from './RunHistory.jsx'
 import StepInspector from './StepInspector.jsx'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle.js'
 
 /*
   One pipeline, three layouts:
@@ -34,6 +35,7 @@ export default function PipelineDetailScreen() {
   const isPhone = useIsPhone()
   const isDesktop = useIsDesktop()
   useCompletionToast(pipeline)
+  useDocumentTitle(pipeline ? `${pipeline.name} pipeline` : null)
 
   if (!pipeline) return <Navigate to="/pipelines" replace />
 
@@ -64,7 +66,7 @@ export default function PipelineDetailScreen() {
               <section aria-label="Selected step" className="rounded-xl border border-line bg-surface p-5">
                 {inspector}
               </section>
-              <aside className="space-y-6">
+              <aside aria-label="Runs and schedule" className="space-y-6">
                 <RunHistory pipeline={pipeline} />
                 <PipelineSettings pipeline={pipeline} />
               </aside>
@@ -116,7 +118,7 @@ function PipelineHeader({ pipeline }) {
     action = (
       <Button variant="secondary" disabled>
         <RotateCw className="size-4 motion-safe:animate-spin" aria-hidden="true" />
-        Running
+        Running…
       </Button>
     )
   } else if (unresolved) {
@@ -125,7 +127,7 @@ function PipelineHeader({ pipeline }) {
     action = (
       <Button variant="primary" onClick={() => rerun(pipeline.id, ready.id)}>
         <RotateCw className="size-4" aria-hidden="true" />
-        Re-run from {ready.name.toLowerCase()}
+        Re-run from {ready.name}
       </Button>
     )
   } else {
@@ -168,7 +170,7 @@ function FailureBanner({ pipeline, step, onReview }) {
     <div role="alert" className="flex flex-col gap-3 rounded-xl border border-fail/30 bg-fail-soft px-4 py-3 sm:flex-row sm:items-center">
       <p className="flex-1 text-sm">
         <span className="font-semibold">
-          {position > 0 ? `Step ${position} of ${chain.length} failed` : 'A step failed'}: {step.name.toLowerCase()}.
+          {position > 0 ? `Step ${position} of ${chain.length} failed` : 'A step failed'}: {step.name}.
         </span>{' '}
         {step.error.summary}. {pipeline.feeds[0]} is showing data from {formatRelative(pipeline.lastSuccessAt)}.
       </p>
@@ -210,7 +212,7 @@ function PipelineSettings({ pipeline }) {
                   id="schedule"
                   value={pipeline.schedule.time}
                   onChange={(e) => changeSchedule(e.target.value)}
-                  className="h-11 w-full appearance-none rounded-lg border border-line-strong bg-surface pr-10 pl-3 pointer-fine:h-9 pointer-fine:text-sm"
+                  className="h-11 w-full appearance-none rounded-lg border border-line-strong bg-surface text-ink pr-10 pl-3 pointer-fine:h-9 pointer-fine:text-sm"
                 >
                   {SCHEDULE_OPTIONS.map((o) => (
                     <option key={o.time} value={o.time}>

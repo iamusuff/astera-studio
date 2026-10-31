@@ -54,7 +54,7 @@ export function applyFix(pipeline, { stepId, at }) {
       appliedFix: s.suggestion,
       error: null,
       suggestion: null,
-      log: addLog(s, at, `Fix approved by ${CURRENT_USER.name}: ${s.suggestion.title.toLowerCase()}`, 'ok'),
+      log: addLog(s, at, `Fix approved by ${CURRENT_USER.name}: ${s.suggestion.title}`, 'ok'),
     }
   })
 }

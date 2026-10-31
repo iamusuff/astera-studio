@@ -6,6 +6,7 @@ import StatusBadge from '../../components/ui/StatusBadge.jsx'
 import { useNow } from '../../hooks/useNow.js'
 import { formatExact, formatRelative } from '../../lib/format.js'
 import { usePipelines } from '../../state/AppStore.jsx'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle.js'
 
 // Problems first: failed, then running, then the rest.
 const ORDER = { failed: 0, running: 1, succeeded: 2, scheduled: 3 }
@@ -15,6 +16,7 @@ const ORDER = { failed: 0, running: 1, succeeded: 2, scheduled: 3 }
   run, next run, what it feeds); on phones the same rows stack into two lines.
 */
 export default function PipelinesScreen() {
+  useDocumentTitle('Pipelines')
   useNow()
   const pipelines = [...usePipelines()].sort((a, b) => ORDER[a.status] - ORDER[b.status])
   const failed = pipelines.filter((p) => p.status === 'failed').length

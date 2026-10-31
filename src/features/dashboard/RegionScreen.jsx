@@ -12,6 +12,7 @@ import { PERIODS } from '../../data/sales.js'
 import { useIsPhone } from '../../hooks/useMediaQuery.js'
 import { isStale, useActions, usePipeline, useStore } from '../../state/AppStore.jsx'
 import KpiStrip from './KpiStrip.jsx'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle.js'
 
 const PERIOD_OPTIONS = PERIODS.map((p) => ({ value: p.id, label: p.id === 'ytd' ? 'YTD' : p.label.replace(' 2026', '') }))
 
@@ -22,6 +23,7 @@ export default function RegionScreen() {
   const { setFilter } = useActions()
   const sales = usePipeline('regional-sales')
   const isPhone = useIsPhone()
+  useDocumentTitle(getRegion(regionId) ? `${getRegion(regionId).name} region` : null)
 
   if (!getRegion(regionId)) return <Navigate to="/dashboard" replace />
   const detail = regionDetail(filters, regionId)

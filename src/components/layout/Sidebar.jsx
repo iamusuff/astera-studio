@@ -8,7 +8,7 @@ import NavBadge, { useFailedCount } from './NavBadge.jsx'
 export default function Sidebar() {
   const failed = useFailedCount()
   return (
-    <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-line xl:flex">
+    <aside aria-label="Sidebar" className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-line xl:flex">
       <div className="px-5 pt-6 pb-8">
         <Logo />
       </div>

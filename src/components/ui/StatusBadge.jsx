@@ -17,7 +17,7 @@ export function StatusIcon({ status, className = 'size-4' }) {
   const { icon: Icon, text, spin } = STATUS[status]
   return (
     <Icon
-      className={`${className} ${text} shrink-0 ${spin ? 'animate-spin [animation-duration:1.6s]' : ''}`}
+      className={`${className} ${text} shrink-0 ${spin ? 'animate-spin [animation-duration:1.1s]' : ''}`}
       strokeWidth={2}
       aria-hidden="true"
     />

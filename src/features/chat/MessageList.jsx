@@ -25,7 +25,7 @@ export default function MessageList({ messages }) {
     <ol className="space-y-8" aria-label="Conversation">
       {messages.map((m) => (
         <li key={m.id} ref={m === last ? lastRef : null} className={`scroll-mt-4 space-y-4 ${m === last ? 'min-h-[calc(100dvh-14rem)]' : ''}`}>
-          <p className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-sunken px-4 py-2.5">{m.question}</p>
+          <p className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-sunken px-4 py-2.5 break-words">{m.question}</p>
           {m.status === 'thinking' && <Thinking answerId={m.answerId} />}
           {m.status === 'done' && (m.answerId ? <AnswerMessage answerId={m.answerId} /> : <NoAnswer />)}
           {m === last && m.status === 'done' && m.answerId && (
@@ -41,10 +41,10 @@ export default function MessageList({ messages }) {
 function Thinking({ answerId }) {
   const pipeline = usePipeline(answerId ? getAnswer(answerId).pipelineId : null)
   return (
-    <div className="flex items-center gap-3 text-ink-muted" role="status">
+    <div className="flex items-center gap-3 text-ink-muted transition-[opacity,translate] duration-200 ease-out-ui starting:translate-y-1.5 starting:opacity-0" role="status">
       <LogoMark className="hidden size-7 shrink-0 md:block" />
       <StatusIcon status="running" />
-      {pipeline ? `Reading the ${pipeline.name} pipeline` : 'Looking for an answer'}
+      {pipeline ? `Reading the ${pipeline.name} pipeline…` : 'Looking for an answer…'}
     </div>
   )
 }
@@ -52,7 +52,7 @@ function Thinking({ answerId }) {
 // No fake answers: say so plainly and offer questions that do work.
 function NoAnswer() {
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 transition-[opacity,translate] duration-200 ease-out-ui starting:translate-y-1.5 starting:opacity-0">
       <LogoMark className="hidden size-7 shrink-0 md:block" />
       <div className="min-w-0 flex-1 space-y-3">
         <p className="max-w-[65ch]">

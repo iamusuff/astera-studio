@@ -18,6 +18,7 @@ import FilterBar from './FilterBar.jsx'
 import KpiStrip from './KpiStrip.jsx'
 import PinnedAnswers from './PinnedAnswers.jsx'
 import SourcesStrip from './SourcesStrip.jsx'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle.js'
 
 /*
   Reading order, top to bottom, is the same on every device:
@@ -29,6 +30,7 @@ import SourcesStrip from './SourcesStrip.jsx'
     6. pinned from chat
 */
 export default function DashboardScreen() {
+  useDocumentTitle(DASHBOARD_NAME)
   const { filters } = useStore().state
   const navigate = useNavigate()
   const failed = usePipelines().filter((p) => DASHBOARD_SOURCES.includes(p.id) && p.status === 'failed')

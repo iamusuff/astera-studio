@@ -24,12 +24,13 @@ export default function AnswerMessage({ answerId }) {
   const isPhone = useIsPhone()
 
   return (
-    <article className="flex gap-3" aria-label={`Answer: ${answer.title}`}>
+    // Fades and rises in over 200ms when it replaces "Reading…", so the swap isn't jarring.
+    <article className="flex gap-3 transition-[opacity,translate] duration-200 ease-out-ui starting:translate-y-1.5 starting:opacity-0" aria-label={`Answer: ${answer.title}`}>
       <LogoMark className="hidden size-7 shrink-0 md:block" />
       <div className="min-w-0 flex-1 space-y-4">
         <p className="max-w-[65ch] leading-relaxed">{answer.summary}</p>
 
-        <ChartCard title={answer.title} description={answer.subtitle} pipeline={pipeline} headingLevel="h3">
+        <ChartCard title={answer.title} description={answer.subtitle} pipeline={pipeline} headingLevel="h2">
           {view === 'chart' ? (
             <ChartView spec={answer.chart} height={isPhone ? 220 : 260} />
           ) : (

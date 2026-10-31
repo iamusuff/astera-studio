@@ -55,7 +55,9 @@ export default function ChartView({ spec, height = 260, onSelect }) {
   }
   // Faded rows stay visible for comparison while a filter focuses on one item.
   const fill = (row, color) => <Cell key={row.label} fill={color} fillOpacity={row.dimmed ? 0.3 : 1} />
-  const animate = { isAnimationActive: !reduceMotion, animationDuration: 450 }
+  // Charts redraw on every filter change, so motion stays short (under 300ms) and ease-out:
+  // enough to show what changed, never enough to make you wait.
+  const animate = { isAnimationActive: !reduceMotion, animationDuration: 300, animationEasing: 'ease-out' }
   const yAxis = (
     <YAxis {...axisProps} axisLine={false} width={48} tickCount={4} tickFormatter={axisTick(spec.format)} />
   )

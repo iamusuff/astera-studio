@@ -7,6 +7,7 @@ import DashboardScreen from './features/dashboard/DashboardScreen.jsx'
 import RegionScreen from './features/dashboard/RegionScreen.jsx'
 import PipelinesScreen from './features/pipelines/PipelinesScreen.jsx'
 import PipelineDetailScreen from './features/pipelines/PipelineDetailScreen.jsx'
+import DevicePreview from './features/preview/DevicePreview.jsx'
 import { AppStoreProvider } from './state/AppStore.jsx'
 import { useIsDesktop } from './hooks/useMediaQuery.js'
 
@@ -28,6 +29,8 @@ export default function App() {
             <Route path="pipelines/:pipelineId" element={<PipelineDetailScreen />} />
             <Route path="*" element={<Navigate to="/chat" replace />} />
           </Route>
+          {/* For reviewers: the app at three device sizes. Outside the app shell on purpose. */}
+          <Route path="preview" element={<DevicePreview />} />
         </Routes>
       </HashRouter>
 

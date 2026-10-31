@@ -94,11 +94,12 @@ export default function FlowDiagram({ pipeline, selectedId, onSelect }) {
                     y={p.label.y}
                     textAnchor={p.label.anchor}
                     fontSize="12"
-                    fill={C.inkMuted}
+                    fill={p.from.rowsOut === 0 ? '#8f5b00' : C.inkMuted}
                     stroke="#f4f6f7"
                     strokeWidth="4"
                     paintOrder="stroke"
                     className="tabular-nums"
+                    fontWeight={p.from.rowsOut === 0 ? 600 : 400}
                   >
                     {formatCompactNumber(p.from.rowsOut)}
                   </text>
@@ -108,7 +109,11 @@ export default function FlowDiagram({ pipeline, selectedId, onSelect }) {
           })}
         </svg>
 
-        {pipeline.steps.map((step) => {
+        {/* Render in reading order (left to right, then top to bottom), so keyboard
+            focus moves through the boxes in the same order the eye does. */}
+        {[...pipeline.steps]
+          .sort((x, y) => positions.get(x.id).col - positions.get(y.id).col || positions.get(x.id).row - positions.get(y.id).row)
+          .map((step) => {
           const pos = positions.get(step.id)
           return (
             <div key={step.id} style={{ gridColumn: pos.col + 1, gridRow: pos.row + 1 }} className="relative">

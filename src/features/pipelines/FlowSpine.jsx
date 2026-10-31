@@ -30,10 +30,13 @@ function Pipe({ status, className = '' }) {
   )
 }
 
+const passedNothing = (step) => step.status === 'succeeded' && step.rowsOut === 0
+
 function pipeLabel(step) {
+  if (passedNothing(step)) return '0 rows, check this step'
   if (step.status === 'succeeded') return `${formatNumber(step.rowsOut)} rows`
   if (step.status === 'failed') return 'Stopped here'
-  if (step.status === 'running') return 'Running'
+  if (step.status === 'running') return 'Running…'
   return 'Not run'
 }
 
@@ -74,7 +77,7 @@ export default function FlowSpine({ pipeline, selectedId, onSelect }) {
                 </div>
                 <p
                   className={`self-center text-[13px] tabular-nums ${
-                    step.status === 'failed' ? 'font-medium text-fail' : 'text-ink-muted'
+                    step.status === 'failed' ? 'font-medium text-fail' : passedNothing(step) ? 'font-medium text-warn' : 'text-ink-muted'
                   }`}
                 >
                   {pipeLabel(step)}

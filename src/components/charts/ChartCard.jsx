@@ -58,7 +58,7 @@ export default function ChartCard({
             {pipeline.name} pipeline
           </Link>
           <Freshness at={pipeline.lastSuccessAt} stale={stale} />
-          {running && <StatusBadge status="running" label="Refreshing" variant="plain" />}
+          {running && <StatusBadge status="running" label="Refreshing…" variant="plain" />}
         </footer>
       )}
     </section>
