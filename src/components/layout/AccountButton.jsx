@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { CURRENT_USER } from '../../data/pipelines.js'
 import Sheet from '../ui/Sheet.jsx'
 import { SettingsPanel } from './Settings.jsx'
 import { Avatar } from './Sidebar.jsx'
@@ -26,8 +27,10 @@ export default function AccountButton() {
           <div className="flex items-center gap-3 rounded-[var(--radius-group)] inset-fill p-3">
             <Avatar className="size-12 text-sm" />
             <span className="leading-tight">
-              <span className="block font-semibold">Muhammad Yousuf</span>
-              <span className="block text-sm text-ink-muted">Halden Outfitters</span>
+              <span className="block font-semibold">{CURRENT_USER.name}</span>
+              <span className="block text-sm text-ink-muted">
+                {CURRENT_USER.role}, {CURRENT_USER.company}
+              </span>
             </span>
           </div>
           <SettingsPanel onClose={() => setOpen(false)} />

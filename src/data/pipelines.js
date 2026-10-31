@@ -30,7 +30,8 @@ import { at } from '../lib/clock.js'
   }
 */
 
-export const CURRENT_USER = { name: 'Muhammad Yousuf', initials: 'MY' }
+// The person using the demo: a business user who owns the dashboard, not a data engineer.
+export const CURRENT_USER = { name: 'Muhammad Yousuf', initials: 'MY', role: 'Sales analyst', company: 'Halden Outfitters' }
 
 // kind -> label used in the UI. Kept to the vocabulary business users already know.
 export const STEP_KINDS = {

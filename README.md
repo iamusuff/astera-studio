@@ -140,11 +140,12 @@ tools/          data consistency checks, screenshot scripts
 docs/media/     images for this README
 ```
 
-## Known limits
+## What I'd build next
 
-- It's a mockup: chat recognizes the five demo questions (and close variations), not any question.
-- Editing the order filter changes the pipeline's row counts, but the dashboard KPIs stay on the original order set.
-- *Inventory levels* stays **Running** so all four statuses are always visible. You can run the other pipelines yourself.
+- **Real pipelines:** read status, row counts and run history from Astera's API instead of the sample business, so the same screens monitor production data.
+- **A language model behind chat,** kept inside the same rules: every answer cites the pipeline it came from, and anything that changes data still waits for a person to approve it.
+- **Alerts with a destination:** when a pipeline feeding your dashboard fails, a notification opens the exact failed step, the way *Review fix* does today.
+- **Lineage for every number:** tap a KPI to see each step it passed through, with row counts, from source to chart.
 
 ---
 

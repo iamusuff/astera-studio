@@ -1,37 +1,35 @@
 # Design note: Astera Studio
 
-**Muhammad Yousuf · FAST-NUCES · Batch 2023** · [Live demo](https://iamusuff.github.io/astera-studio/)
+**Muhammad Yousuf · FAST-NUCES · Batch 2023** · [Live demo](https://iamusuff.github.io/astera-studio/) · [Code](https://github.com/iamusuff/astera-studio)
 
-## The main idea: design for trust
+## The bet: an analytics tool is only as good as the trust you can place in it
 
-A chat answer or a dashboard tile is only as reliable as the pipeline behind it, so I made that link visible everywhere. Every chart names its pipeline and how fresh its data is. When a pipeline fails, the affected numbers say *"Data may be out of date"*, and one tap leads to the failed step. The step explains the failure in plain language, suggests a fix with a preview, and waits for a person to approve it. This follows Astera's governed-AI model: AI proposes, a human approves, the system runs and logs it. Re-running clears the warning on every screen at once.
+Charts usually hide the pipelines behind them, so when one breaks, people keep deciding on stale numbers. Astera Studio keeps that link visible at every level. Each chart names its pipeline and how fresh its data is. A failure flags *only* the numbers it affects and leads, in one tap, to the failed step. There, the cause is explained in plain language (*Sara in Finance renamed `Region` to `Sales_Region`*) with a suggested fix, a preview, and an **Approve** button. It mirrors Astera's governed-AI model: **AI proposes, a person approves, the system runs and logs.** One re-run clears the warning on every screen, because every screen reads from the same state.
 
-## Pipeline detail, the hardest screen
+## The pipeline screen: one structure, three ways to read it
 
-- **Desktop:** the full flow left to right. Side inputs (the Excel file) sit below the step they merge into, connectors are drawn from measured box positions, and each line carries the rows that passed through it (`638.9K → 195.4K → 0`). A broken step is easy to spot without reading anything.
-- **iPad and iPhone:** a vertical *spine* instead of a canvas. Most real pipelines are one chain with a few side inputs, so a merge becomes a **"Merges with Q3_regional_targets.xlsx"** chip on the step instead of crossing lines. On iPad the step's details open beside the spine; on iPhone they open in a bottom sheet with *Details / Edit / Run log*.
-- **Safe edits on a phone:** the filter step previews its effect (*195,436 → 209,651 rows*) before you save. Changes apply on the next run, and fixes, edits and pins can all be undone.
+- **Desktop:** the full flow, left to right. Side inputs sit under the step they feed. Connectors are drawn from measured positions and carry the rows that passed through (`638.9K → 195.4K → 0`), so the break is visible before you read a word.
+- **iPad and iPhone:** a vertical **spine**. Most pipelines are one chain with a few side inputs, so a merge becomes a *"Merges with Q3_regional_targets.xlsx"* chip instead of crossing lines. Details open beside the spine on iPad and in a bottom sheet on iPhone.
+- **Safe edits from a phone:** a filter change previews its effect (*195,436 → 209,651 rows*) before saving. It applies on the next run, and fixes, edits and pins can all be undone.
 
-Other choices: color means status (red only when something needs attention); Apple's patterns per device (tab bar, sidebar, sheets, large titles) so each layout adapts instead of shrinking; no hover-only interactions; light and dark mode with *Reduce motion* and *Reduce transparency* respected.
+**The idea I dropped:** a single pan-and-zoom canvas on every device, like a desktop ETL designer. It looked consistent, but at 375 px you'd pinch and drag just to read one step name. The spine shows the same graph and works with a thumb, so the canvas lives only where there's room for it.
 
-## An idea I dropped
+**Checked, not assumed:** tested on 4 viewport sizes · 0 axe-core accessibility violations in light and dark · 17 automated checks that every screen's numbers agree · works by touch and keyboard, with no hover-only actions.
 
-**One pan-and-zoom canvas for every device**, like a desktop ETL designer. It looked consistent, but on a 375 px phone you would spend the whole time pinching and dragging to read one step name, and tapping a node accurately is hard. The spine shows the same structure and stays usable with a thumb, so the canvas lives only where there's room for it.
+## How I worked with AI
 
-## How I used AI
+**Tool:** Claude Code (Anthropic) as a pair programmer, with design, mobile-web, accessibility and Playwright testing skills installed. I set direction and reviewed every phase; it wrote and tested code.
 
-**Tool:** Claude Code (Anthropic's Claude) as a pair programmer, with installed design and testing skills (frontend design, mobile web, accessibility review, Playwright testing).
+**Three prompts that shaped the result:**
 
-**Key prompts (shortened):**
+1. *"Act as a principal engineer reviewing my work, not an assistant agreeing with it: challenge my assumptions, point out my mistakes, and justify each decision before you build it."*
+2. *"Hold the interface to Apple's standards: every device gets the layout native to it, motion feels physical, and color is used only where it means something."*
+3. *"Stop polishing the screens and audit the system: walk through every pipeline state (fail, fix, re-run, undo, reset) and find any moment where the app could tell the user something untrue."* This found an Undo that could leave a pipeline stuck on "Running", and a re-run that skipped an edited filter. Both are fixed.
 
-1. *"Act as an extremely senior developer. I can make mistakes or be wrong, so point them out, and tell me the decisions you make and why."*
-2. *"I want the website to feel like an iOS application: smoothness, a clever layout, a premium look. Choose the theme wisely."*
-3. *"Check the whole flow now, not just the UI: the system parts like pipeline fixes, and tell me what the next steps should be."*
+**Small decisions I made by hand:**
 
-**What I changed and corrected myself:**
-
-- I rejected the first interface as too plain and pushed it toward a native iOS feel.
-- I called out details that looked machine-made: generic icons, rainbow icon tiles and colored status dots in the sidebar. These became one consistent icon set and calm, single-color tiles, with color only for failures.
-- I spotted the chat page not widening when the sidebar closed, and the empty pipeline rows in the sidebar.
-- I asked for a review of the logic, not just the looks. It found an Undo bug that could leave a pipeline stuck on "Running" and an edited filter being skipped on re-run. Both are now fixed.
-- I chose plain JavaScript over TypeScript so I can explain every line.
+- **Warn only where the data is wrong.** Revenue, orders and order value carry a warning icon, but return rate doesn't, because it comes from a different, healthy pipeline.
+- **Say what is still true, not just what broke:** *"Last good data yesterday, 6:05 AM"* instead of a bare *Failed*.
+- **Numbers that don't wobble:** tabular figures, so digits keep their width while KPIs animate, and a true minus sign (−), so *+2.2%* and *−8.0%* line up.
+- **Quiet by default:** healthy pipelines in the sidebar show only *"2h"*. Only a failure or a run in progress earns an icon, so problems stand out.
+- **Show who it's for:** the line under my name shows a role, *Sales analyst*, not the company. The person fixing this pipeline is a business user, not an engineer.

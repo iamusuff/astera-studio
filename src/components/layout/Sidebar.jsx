@@ -4,6 +4,7 @@ import { NavLink, useLocation } from 'react-router'
 
 import { useNow } from '../../hooks/useNow.js'
 import { formatShortAgo } from '../../lib/format.js'
+import { CURRENT_USER } from '../../data/pipelines.js'
 import { subjectIcon } from '../../features/pipelines/subjectIcon.js'
 import { usePipelines } from '../../state/AppStore.jsx'
 import Logo from '../brand/Logo.jsx'
@@ -121,8 +122,8 @@ export default function Sidebar({ open }) {
         <div className="relative mt-auto flex items-center gap-3 border-t border-line py-3 pr-2.5 pl-4">
           <Avatar />
           <span className="min-w-0 flex-1 leading-tight">
-            <span className="block truncate text-sm font-semibold">Muhammad Yousuf</span>
-            <span className="block truncate text-xs text-ink-muted">Halden Outfitters</span>
+            <span className="block truncate text-sm font-semibold">{CURRENT_USER.name}</span>
+            <span className="block truncate text-xs text-ink-muted">{CURRENT_USER.role}</span>
           </span>
           <SettingsButton />
         </div>
@@ -186,7 +187,7 @@ export function Avatar({ className = 'size-8 text-xs' }) {
       className={`grid shrink-0 place-items-center rounded-full bg-gradient-to-b from-[#8e8e93] to-[#636366] font-semibold text-white ${className}`}
       aria-hidden="true"
     >
-      MY
+      {CURRENT_USER.initials}
     </span>
   )
 }
