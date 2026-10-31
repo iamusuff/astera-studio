@@ -1,6 +1,6 @@
 import { ArrowClockwise, Play } from '@phosphor-icons/react'
 import { useEffect, useRef } from 'react'
-import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
+import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from 'react-router'
 
 import PageHeader from '../../components/layout/PageHeader.jsx'
 import Button from '../../components/ui/Button.jsx'
@@ -36,16 +36,53 @@ export default function PipelineDetailScreen() {
   const [params, setParams] = useSearchParams()
   const isPhone = useIsPhone()
   const isDesktop = useIsDesktop()
+  const location = useLocation()
   useCompletionToast(pipeline)
   useDocumentTitle(pipeline ? `${pipeline.name} pipeline` : null)
 
+  const failedStep = pipeline?.steps.find((s) => s.status === 'failed')
+  const select = (id) => setParams({ step: id }, { replace: true })
+
+  /*
+    "Review fix": open the failed step and bring its explanation into view.
+    On a phone the step opens in a sheet, which is already in view. On iPad and
+    desktop the details sit beside or below the flow, so scroll there, move
+    focus there (for keyboard and screen reader users) and pulse the suggested
+    fix once, so the eye lands on it.
+  */
+  function reviewFix(stepId) {
+    select(stepId)
+    if (isPhone) return
+    // Two frames: let the inspector render the step first
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        const target = document.getElementById(`fix-${stepId}`)
+        if (!target) return
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+        target.focus({ preventScroll: true })
+        if (!reduce) {
+          target.querySelector('[data-fix-card]')?.animate(
+            [{ boxShadow: '0 0 0 0 rgb(0 113 227 / 0.45)' }, { boxShadow: '0 0 0 12px rgb(0 113 227 / 0)' }],
+            { duration: 900, delay: 350, iterations: 2, easing: 'ease-out' },
+          )
+        }
+      }),
+    )
+  }
+
+  // Arriving from a "Review fix" link on the dashboard or in chat
+  const arrivedToReview = location.state?.reviewFix
+  useEffect(() => {
+    if (arrivedToReview && failedStep?.error) reviewFix(failedStep.id)
+    // Once per arrival (location.key), not on every re-render
+  }, [location.key])
+
   if (!pipeline) return <Navigate to="/pipelines" replace />
 
-  const failedStep = pipeline.steps.find((s) => s.status === 'failed')
   const requested = pipeline.steps.find((s) => s.id === params.get('step'))
   // iPad and desktop always show a step; default to the one that needs attention.
   const selected = requested ?? (isPhone ? null : failedStep ?? mainChain(pipeline)[0])
-  const select = (id) => setParams({ step: id }, { replace: true })
   const closeSheet = () => setParams({}, { replace: true })
 
   const inspector = selected && (
@@ -57,7 +94,7 @@ export default function PipelineDetailScreen() {
       <PipelineHeader pipeline={pipeline} />
 
       <div className="space-y-6 px-4 pb-10 md:px-8 xl:px-10">
-        {failedStep?.error && <FailureBanner pipeline={pipeline} step={failedStep} onReview={() => select(failedStep.id)} />}
+        {failedStep?.error && <FailureBanner pipeline={pipeline} step={failedStep} onReview={() => reviewFix(failedStep.id)} />}
 
         {isDesktop ? (
           <>

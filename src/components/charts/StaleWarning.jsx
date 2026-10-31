@@ -34,7 +34,7 @@ export default function StaleWarning({ pipeline, compact = false, affected = 'th
           )}
         </p>
       </div>
-      <ButtonLink to={to} variant="onColor" size="sm" className="self-start sm:self-auto">
+      <ButtonLink to={to} state={{ reviewFix: true }} variant="onColor" size="sm" className="self-start sm:self-auto">
         Review fix
       </ButtonLink>
     </div>

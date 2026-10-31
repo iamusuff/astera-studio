@@ -31,8 +31,9 @@ export default function FixSuggestion({ pipeline, step }) {
     })
   }
 
+  // id + tabIndex: "Review fix" scrolls here and moves focus here (reviewFix in PipelineDetailScreen)
   return (
-    <div className="space-y-4">
+    <div id={`fix-${step.id}`} tabIndex={-1} className="space-y-4 outline-none">
       <section className="space-y-2">
         <h3 className="text-sm font-semibold">What happened</h3>
         <p className="leading-relaxed">{error.explanation}</p>
@@ -44,7 +45,7 @@ export default function FixSuggestion({ pipeline, step }) {
         </details>
       </section>
 
-      <section className="rounded-2xl inset-fill p-4">
+      <section data-fix-card className="rounded-2xl inset-fill p-4">
         <p className="flex items-center gap-2 text-sm text-ink-muted">
           <Wrench className="size-4" aria-hidden="true" />
           Suggested fix
