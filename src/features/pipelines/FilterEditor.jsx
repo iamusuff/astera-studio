@@ -28,6 +28,8 @@ export default function FilterEditor({ pipeline, step }) {
   const before = rowsFor(saved)
   const after = rowsFor(statuses)
   const diff = after - before
+  // No edits mid-run: the run is already using the current settings.
+  const running = pipeline.status === 'running'
 
   function toggle(id) {
     setStatuses((current) => (current.includes(id) ? current.filter((s) => s !== id) : [...current, id]))
@@ -74,7 +76,9 @@ export default function FilterEditor({ pipeline, step }) {
       </fieldset>
 
       <div aria-live="polite" className="rounded-xl bg-sunken px-4 py-3 text-sm">
-        {statuses.length === 0 ? (
+        {running ? (
+          <p className="text-ink-muted">This pipeline is running. You can save changes when it finishes.</p>
+        ) : statuses.length === 0 ? (
           <p className="text-fail">Keep at least one kind of order, or the dashboard would have no data.</p>
         ) : changed ? (
           <p>
@@ -93,7 +97,7 @@ export default function FilterEditor({ pipeline, step }) {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button variant="primary" onClick={save} disabled={!changed || statuses.length === 0}>
+        <Button variant="primary" onClick={save} disabled={!changed || statuses.length === 0 || running}>
           Save change
         </Button>
         {changed && (

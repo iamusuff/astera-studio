@@ -15,7 +15,7 @@ export default function EmptyChat() {
   const { ask } = useActions()
   return (
     <div className="pt-2 md:pt-6">
-      <h2 className="px-1 text-[13px] font-semibold text-ink-muted">Try asking</h2>
+      <h2 className="text-[13px] font-semibold text-ink-muted">Try asking</h2>
       <ul className="mt-2 overflow-hidden rounded-[var(--radius-group)] glass-card">
         {STARTER_QUESTIONS.map((id, i) => {
           const { question } = getAnswer(id)
@@ -41,7 +41,7 @@ export default function EmptyChat() {
           )
         })}
       </ul>
-      <p className="mt-3 px-1 text-[13px] text-ink-muted">
+      <p className="mt-3 text-[13px] text-ink-muted">
         Studio answers with a chart and a short summary, and shows which pipeline every number came from.
       </p>
     </div>

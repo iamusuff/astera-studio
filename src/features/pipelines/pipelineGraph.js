@@ -76,17 +76,6 @@ export function edges(pipeline) {
   return pipeline.steps.flatMap((s) => s.inputs.map((from) => ({ from, to: s.id })))
 }
 
-/*
-  What a connector looks like depends on the step data flows out of:
-    succeeded  solid slate line, labelled with the rows it passed on
-    running    blue, data is moving
-    failed     red, nothing passed on
-    waiting    dashed grey, has not run
-*/
-export function edgeState(fromStep) {
-  return fromStep.status
-}
-
 export function stepIcon(step) {
   if (step.kind === 'source') {
     if (step.target.endsWith('.xlsx')) return FileXls

@@ -1,6 +1,7 @@
-import { createContext, useContext, useLayoutEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react'
 
 import { useMediaQuery } from '../hooks/useMediaQuery.js'
+import { switchThemeWithLight } from '../lib/viewTransition.js'
 
 /*
   Appearance: 'system' (follow the device), 'light' or 'dark'.
@@ -34,7 +35,18 @@ export function ThemeProvider({ children }) {
     }
   }, [theme, preference])
 
-  const value = useMemo(() => ({ preference, setPreference, theme }), [preference, theme])
+  // Changing the choice from a control: when the look actually changes, light
+  // spreads out of that control (`origin`) across the page.
+  const changePreference = useCallback(
+    (next, origin) => {
+      const nextTheme = next === 'system' ? (systemDark ? 'dark' : 'light') : next
+      if (nextTheme === theme) setPreference(next)
+      else switchThemeWithLight(origin, () => setPreference(next))
+    },
+    [systemDark, theme],
+  )
+
+  const value = useMemo(() => ({ preference, setPreference, changePreference, theme }), [preference, changePreference, theme])
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
 

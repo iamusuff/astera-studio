@@ -1,8 +1,9 @@
-import { CaretDown, SlidersHorizontal } from '@phosphor-icons/react'
+import { Check, SlidersHorizontal } from '@phosphor-icons/react'
 import { useState } from 'react'
 
 import Button from '../../components/ui/Button.jsx'
 import SegmentedControl from '../../components/ui/SegmentedControl.jsx'
+import Select from '../../components/ui/Select.jsx'
 import Sheet from '../../components/ui/Sheet.jsx'
 import { filterLabel, REGION_OPTIONS } from '../../data/dashboard.js'
 import { PERIODS } from '../../data/sales.js'
@@ -62,28 +63,55 @@ function FilterControls({ filters, stacked = false }) {
           className={stacked ? 'flex w-full [&>button]:flex-1' : ''}
         />
       </div>
-      <div className={stacked ? 'space-y-2' : ''}>
-        <label htmlFor="region-filter" className={stacked ? 'block text-sm font-medium' : 'sr-only'}>
-          Region
-        </label>
-        {/* Native select: on iPhone and iPad it opens the system picker, which is the most
-            comfortable way to choose from a list by touch. */}
-        <div className="relative">
-          <select
+      {stacked ? (
+        <RegionList value={filters.region} onChange={(v) => setFilter('region', v)} />
+      ) : (
+        <div>
+          <label htmlFor="region-filter" className="sr-only">
+            Region
+          </label>
+          <Select
             id="region-filter"
             value={filters.region}
-            onChange={(e) => setFilter('region', e.target.value)}
-            className={`h-11 appearance-none rounded-xl bg-sunken font-medium text-ink pr-10 pl-3.5 text-[15px] pointer-fine:h-9 pointer-fine:text-sm ${stacked ? 'w-full' : 'min-w-40'}`}
-          >
-            {REGION_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-          <CaretDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
+            options={REGION_OPTIONS}
+            onChange={(v) => setFilter('region', v)}
+            className="min-w-40"
+          />
         </div>
-      </div>
+      )}
     </div>
+  )
+}
+
+// In the phone's filter sheet: an iOS inset list with a check, one tap to choose.
+function RegionList({ value, onChange }) {
+  return (
+    <fieldset className="space-y-2">
+      <legend className="text-sm font-medium">Region</legend>
+      <div className="overflow-hidden rounded-[var(--radius-group)] inset-fill">
+        {REGION_OPTIONS.map((o, index) => {
+          const selected = o.value === value
+          return (
+            <label
+              key={o.value}
+              className={`flex min-h-11 cursor-pointer items-center gap-3 px-4 text-[15px] transition-colors active:bg-black/[0.05] has-[:focus-visible]:bg-tint-soft dark:active:bg-white/[0.06] ${
+                index > 0 ? 'border-t border-line' : ''
+              }`}
+            >
+              <input
+                type="radio"
+                name="region"
+                value={o.value}
+                checked={selected}
+                onChange={() => onChange(o.value)}
+                className="sr-only"
+              />
+              <span className={`flex-1 ${selected ? 'font-semibold' : ''}`}>{o.label}</span>
+              {selected && <Check className="size-[18px] text-tint-text" weight="bold" aria-hidden="true" />}
+            </label>
+          )
+        })}
+      </div>
+    </fieldset>
   )
 }

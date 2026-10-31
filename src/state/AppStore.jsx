@@ -13,9 +13,11 @@ import * as pipelineOps from './pipelineReducer.js'
   Plain React (Context + useReducer) on purpose: the state is small and there is
   no server, so a state library would add nothing.
 
-  Undo: each undoable action saves a snapshot of what it changed, tagged with an
-  id. Undo only restores if that id is still the latest change, so an old toast's
-  Undo button can never roll back a newer change.
+  Undo: each undoable action saves only what it changed (the pins, one step,
+  or one schedule), tagged with an id. Undo puts back just that, so it can never
+  roll back something else, like a run that finished in the meantime. It only
+  works while that id is still the latest change, so an old toast's Undo button
+  can never undo a newer change. Starting a run clears it: you can't un-run.
 */
 
 const initialState = {
@@ -23,14 +25,23 @@ const initialState = {
   pins: [], // [{ id, answerId, pinnedAt }]
   filters: { period: 'q3', region: 'all' },
   chat: [], // [{ id, question, answerId, status: 'thinking' | 'done' }]
-  undo: null, // { id, pipelines, pins }
+  undo: null, // { id, pins, pipelineId?, step?, schedule? }
+  epoch: 0, // goes up on every reset, so screens can tell a reset from a real status change
 }
 
 const RUN_TICK_MS = 1100 // a demo run takes a few seconds, not a few minutes
 const THINKING_MS = 1200 // long enough to read "Reading the Regional sales pipeline"
 
-function withUndo(state, undoId) {
-  return { id: undoId, pipelines: state.pipelines, pins: state.pins }
+// What undo needs to put back. `step` / `schedule` are the values before the change.
+function withUndo(state, undoId, { pipelineId, stepId, schedule = false } = {}) {
+  const pipeline = pipelineId && state.pipelines.find((p) => p.id === pipelineId)
+  return {
+    id: undoId,
+    pins: state.pins,
+    pipelineId,
+    step: stepId ? pipeline.steps.find((s) => s.id === stepId) : null,
+    schedule: schedule ? pipeline.schedule : null,
+  }
 }
 
 function mapPipeline(state, id, fn) {
@@ -60,19 +71,19 @@ function reducer(state, action) {
     case 'EDIT_STEP':
       return {
         ...mapPipeline(state, action.pipelineId, (p) => pipelineOps.editStep(p, action)),
-        undo: withUndo(state, action.undoId),
+        undo: withUndo(state, action.undoId, { pipelineId: action.pipelineId, stepId: action.stepId }),
       }
 
     case 'EDIT_SCHEDULE':
       return {
         ...mapPipeline(state, action.pipelineId, (p) => pipelineOps.editSchedule(p, action)),
-        undo: withUndo(state, action.undoId),
+        undo: withUndo(state, action.undoId, { pipelineId: action.pipelineId, schedule: true }),
       }
 
     case 'APPLY_FIX':
       return {
         ...mapPipeline(state, action.pipelineId, (p) => pipelineOps.applyFix(p, action)),
-        undo: withUndo(state, action.undoId),
+        undo: withUndo(state, action.undoId, { pipelineId: action.pipelineId, stepId: action.stepId }),
       }
 
     // Runs are not undoable: you can't un-run a pipeline. Starting one clears undo.
@@ -94,9 +105,23 @@ function reducer(state, action) {
     case 'CHAT_CLEAR':
       return { ...state, chat: [] }
 
-    case 'UNDO':
-      if (state.undo?.id !== action.undoId) return state
-      return { ...state, pipelines: state.undo.pipelines, pins: state.undo.pins, undo: null }
+    // Settings > Reset demo data: everything back to how the demo starts.
+    case 'RESET':
+      return { ...initialState, epoch: state.epoch + 1 }
+
+    case 'UNDO': {
+      const saved = state.undo
+      if (saved?.id !== action.undoId) return state
+      let next = { ...state, pins: saved.pins, undo: null }
+      if (saved.schedule) next = mapPipeline(next, saved.pipelineId, (p) => ({ ...p, schedule: saved.schedule }))
+      if (saved.step) {
+        next = mapPipeline(next, saved.pipelineId, (p) => ({
+          ...p,
+          steps: p.steps.map((s) => (s.id === saved.step.id ? saved.step : s)),
+        }))
+      }
+      return next
+    }
 
     default:
       throw new Error(`Unknown action: ${action.type}`)
@@ -181,6 +206,13 @@ export function AppStoreProvider({ children }) {
         return id
       },
       clearChat: () => dispatch({ type: 'CHAT_CLEAR' }),
+
+      // Stop simulated runs first, so a timer can't tick on the fresh data.
+      reset: () => {
+        timers.current.forEach(clearInterval)
+        timers.current.clear()
+        dispatch({ type: 'RESET' })
+      },
     }),
     [],
   )

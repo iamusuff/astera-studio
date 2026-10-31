@@ -1,11 +1,12 @@
 import { LayoutGroup, motion } from 'motion/react'
 import { useId, useRef } from 'react'
 
-export const SPRING = { type: 'spring', stiffness: 520, damping: 40, mass: 0.8 }
+export const SPRING = { type: 'spring', stiffness: 500, damping: 34, mass: 0.8 }
 
 /*
   iOS segmented control. The white thumb slides to the chosen segment on a
-  spring (motion's shared layout animation), like the native control.
+  spring (motion's shared layout animation), like the native control, and
+  the label you press dips slightly, so the control answers your finger.
   Built as a radio group: arrow keys move the selection.
 */
 export default function SegmentedControl({ label, options, value, onChange, className = '' }) {
@@ -41,7 +42,9 @@ export default function SegmentedControl({ label, options, value, onChange, clas
               }`}
             >
               {selected && <Thumb />}
-              <span className="relative">{option.label}</span>
+              <span className="relative inline-block transition-transform duration-150 ease-out-ui [button:active>&]:scale-[0.94]">
+                {option.label}
+              </span>
             </button>
           )
         })}

@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import { CaretLeft, SidebarSimple } from '@phosphor-icons/react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
@@ -18,9 +18,12 @@ import { useLayout } from './AppShell.jsx'
 
   Props: title, description, back { to, label }, actions (right of the large
   title), accessory (next to the title, e.g. a status badge), children (extra
-  lines under the description).
+  lines under the description), contentClassName (width and padding of the
+  large-title block; Chat narrows it to line up with the conversation).
 */
-export default function PageHeader({ title, description, back, actions, accessory, children }) {
+const CONTENT = 'px-4 md:px-8 xl:px-10'
+
+export default function PageHeader({ title, description, back, actions, accessory, children, contentClassName = CONTENT }) {
   const { sidebarOpen, canToggle, toggleSidebar } = useLayout()
   const wide = useMediaQuery('(min-width: 1024px)')
   const titleRef = useRef(null)
@@ -47,17 +50,24 @@ export default function PageHeader({ title, description, back, actions, accessor
         />
         <div className="relative grid h-[52px] grid-cols-[1fr_auto_1fr] items-center gap-2 px-2 md:px-5">
           <div className="flex min-w-0 items-center gap-1">
-            {canToggle && !sidebarOpen && (
-              <button
-                type="button"
-                onClick={toggleSidebar}
-                aria-label="Show sidebar"
-                title="Show sidebar ( [ )"
-                className="grid size-9 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-sunken hover:text-ink"
-              >
-                <SidebarSimple className="size-[18px]" aria-hidden="true" />
-              </button>
-            )}
+            {/* Appears as the sidebar folds away, and leaves as it comes back */}
+            <AnimatePresence initial={false}>
+              {canToggle && !sidebarOpen && (
+                <motion.button
+                  type="button"
+                  onClick={toggleSidebar}
+                  aria-label="Show sidebar"
+                  title="Show sidebar ( [ )"
+                  initial={{ opacity: 0, scale: 0.6, x: -12 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.6, transition: { duration: 0.12 } }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30, delay: 0.08 }}
+                  className="grid size-9 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-sunken hover:text-ink"
+                >
+                  <SidebarSimple className="size-[18px]" aria-hidden="true" />
+                </motion.button>
+              )}
+            </AnimatePresence>
             {back && (
               <Link
                 to={back.to}
@@ -83,7 +93,7 @@ export default function PageHeader({ title, description, back, actions, accessor
         </div>
       </div>
 
-      <header className="px-4 pb-6 md:px-8 xl:px-10">
+      <header className={`pb-6 ${contentClassName}`}>
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">

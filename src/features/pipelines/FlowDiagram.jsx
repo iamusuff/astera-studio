@@ -15,6 +15,9 @@ import { edges, gridLayout, stepIcon } from './pipelineGraph.js'
   its own box; the page itself never does.
 */
 
+// A connector looks like the state of the step data flows out of: solid blue
+// once it passed rows on, moving dashes while running, red when it failed,
+// dashed grey when it hasn't run.
 const edgeStyles = (C) => ({
   succeeded: { stroke: C.series, dash: null },
   running: { stroke: C.run, dash: '6 5', animate: true },

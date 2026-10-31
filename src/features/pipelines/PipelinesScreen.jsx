@@ -1,4 +1,4 @@
-import { ArrowUUpLeft, CaretRight, ChartLineUp, FlowArrow, Megaphone, Package } from '@phosphor-icons/react'
+import { CaretRight } from '@phosphor-icons/react'
 import { Link } from 'react-router'
 
 import PageHeader from '../../components/layout/PageHeader.jsx'
@@ -7,18 +7,10 @@ import { useNow } from '../../hooks/useNow.js'
 import { formatExact, formatRelative } from '../../lib/format.js'
 import { usePipelines } from '../../state/AppStore.jsx'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle.js'
+import { subjectIcon } from './subjectIcon.js'
 
 // Problems first: failed, then running, then the rest.
 const ORDER = { failed: 0, running: 1, succeeded: 2, scheduled: 3 }
-
-// One calm tile style for every row; the icon says what the pipeline is about.
-// Status is the badge's job, so color never doubles up.
-const SUBJECT_ICON = {
-  'regional-sales': ChartLineUp,
-  'inventory-levels': Package,
-  'customer-returns': ArrowUUpLeft,
-  'marketing-spend': Megaphone,
-}
 
 /*
   All pipelines. On desktop each row reads like a table (name, status, last
@@ -60,7 +52,7 @@ export default function PipelinesScreen() {
                   className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-3 transition-colors hover:bg-sunken/50 active:bg-sunken md:px-5 lg:grid-cols-[minmax(0,2.2fr)_8rem_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.2fr)_1.25rem]"
                 >
                   <span className="flex min-w-0 items-center gap-3.5">
-                    <SubjectTile icon={SUBJECT_ICON[p.id] ?? FlowArrow} />
+                    <SubjectTile icon={subjectIcon(p.id)} />
                     <span className="min-w-0">
                       <span className="block font-semibold">{p.name}</span>
                       <span className="hidden truncate text-sm text-ink-muted md:block">{p.description}</span>
@@ -88,6 +80,7 @@ export default function PipelinesScreen() {
   )
 }
 
+// One calm tile style for every row; the icon says what the pipeline is about.
 function SubjectTile({ icon: Icon }) {
   return (
     <span className="grid size-10 shrink-0 place-items-center rounded-[12px] bg-tint-soft text-tint-text" aria-hidden="true">

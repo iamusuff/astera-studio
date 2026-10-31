@@ -84,6 +84,7 @@ export function startRun(pipeline, { fromStepId, runId, at }) {
         rowsOut: null,
         lastRowsIn: s.rowsIn, // what it received and produced last time
         lastRowsOut: s.rowsOut ?? s.healthy?.rowsOut ?? null,
+        lastDurationMs: s.durationMs ?? s.lastDurationMs ?? null,
         durationMs: null,
         edited: false,
         log: first ? addLog(s, at, `Re-run started by ${CURRENT_USER.name}`) : s.log,
@@ -136,7 +137,8 @@ export function tickRun(pipeline, { at }) {
       status: 'succeeded',
       rowsIn,
       rowsOut,
-      durationMs: s.healthy?.durationMs ?? s.durationMs,
+      // A demo run takes about as long as the step's last good run
+      durationMs: s.healthy?.durationMs ?? s.lastDurationMs ?? 1000,
       log: addLog(s, at, `Succeeded: ${rowsOut.toLocaleString('en-US')} rows out`, 'ok'),
     }
   })

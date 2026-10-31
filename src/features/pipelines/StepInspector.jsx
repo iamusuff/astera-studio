@@ -127,11 +127,14 @@ function Details({ pipeline, step, onSelect }) {
                 <button
                   type="button"
                   onClick={() => onSelect(input.id)}
-                  className="flex min-h-11 w-full items-center gap-2 rounded-lg text-left text-sm hover:underline pointer-fine:min-h-8"
+                  className="group flex min-h-11 w-full items-center gap-2.5 rounded-lg py-1.5 text-left text-sm pointer-fine:min-h-8"
                 >
                   <StatusBadge status={input.status} variant="plain" label="" />
-                  <span className="font-medium">{input.name}</span>
-                  <span className="min-w-0 truncate text-ink-muted">{input.target}</span>
+                  {/* Name above, source below: never squeezed side by side in a narrow inspector */}
+                  <span className="min-w-0 flex-1 leading-snug">
+                    <span className="block font-medium group-hover:underline">{input.name}</span>
+                    <span className="block truncate text-[13px] text-ink-muted">{input.target}</span>
+                  </span>
                 </button>
               </li>
             ))}

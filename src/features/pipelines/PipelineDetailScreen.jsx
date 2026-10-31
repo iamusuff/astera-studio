@@ -1,4 +1,4 @@
-import { ArrowClockwise, CaretDown, Play } from '@phosphor-icons/react'
+import { ArrowClockwise, Play } from '@phosphor-icons/react'
 import { useEffect, useRef } from 'react'
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
 
@@ -6,12 +6,13 @@ import PageHeader from '../../components/layout/PageHeader.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Freshness from '../../components/ui/Freshness.jsx'
 import { notify } from '../../components/ui/notify.jsx'
+import Select from '../../components/ui/Select.jsx'
 import Sheet from '../../components/ui/Sheet.jsx'
 import StatusBadge from '../../components/ui/StatusBadge.jsx'
 import { SCHEDULE_OPTIONS, STEP_KINDS } from '../../data/pipelines.js'
 import { useIsDesktop, useIsPhone } from '../../hooks/useMediaQuery.js'
 import { formatRelative } from '../../lib/format.js'
-import { isStale, useActions, usePipeline } from '../../state/AppStore.jsx'
+import { isStale, useActions, usePipeline, useStore } from '../../state/AppStore.jsx'
 import FlowDiagram from './FlowDiagram.jsx'
 import FlowSpine from './FlowSpine.jsx'
 import { mainChain } from './pipelineGraph.js'
@@ -112,7 +113,9 @@ function PipelineHeader({ pipeline }) {
   const { rerun } = useActions()
   const running = pipeline.status === 'running'
   const unresolved = pipeline.steps.some((s) => s.status === 'failed' && s.error)
-  const ready = pipeline.steps.find((s) => s.appliedFix && s.status === 'waiting')
+  // Re-run from the earliest step with a change waiting (an approved fix or an
+  // edit), so one run applies all of them, never skipping an edit upstream.
+  const ready = mainChain(pipeline).find((s) => (s.appliedFix && s.status === 'waiting') || s.edited)
 
   let action
   if (running) {
@@ -197,21 +200,13 @@ function PipelineSettings({ pipeline }) {
           </dt>
           <dd className="mt-1">
             {daily ? (
-              <div className="relative">
-                <select
-                  id="schedule"
-                  value={pipeline.schedule.time}
-                  onChange={(e) => changeSchedule(e.target.value)}
-                  className="h-11 w-full appearance-none rounded-xl bg-sunken font-medium text-ink pr-10 pl-3 pointer-fine:h-9 pointer-fine:text-sm"
-                >
-                  {SCHEDULE_OPTIONS.map((o) => (
-                    <option key={o.time} value={o.time}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-                <CaretDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
-              </div>
+              <Select
+                id="schedule"
+                value={pipeline.schedule.time}
+                options={SCHEDULE_OPTIONS.map((o) => ({ value: o.time, label: o.label }))}
+                onChange={changeSchedule}
+                className="w-full"
+              />
             ) : (
               pipeline.schedule.label
             )}
@@ -245,17 +240,20 @@ function PipelineSettings({ pipeline }) {
 // When a run you're watching finishes, say so, and offer the next step.
 function useCompletionToast(pipeline) {
   const navigate = useNavigate()
-  const previous = useRef(pipeline?.status)
+  const { epoch } = useStore().state
+  const previous = useRef({ status: pipeline?.status, epoch })
   useEffect(() => {
     if (!pipeline) return
     const before = previous.current
-    previous.current = pipeline.status
-    if (before !== 'running' || pipeline.status === 'running') return
+    previous.current = { status: pipeline.status, epoch }
+    // A reset is not a run finishing
+    if (before.epoch !== epoch || before.status !== 'running' || pipeline.status === 'running') return
     if (pipeline.status === 'succeeded') {
       notify({
         title: `${pipeline.name} succeeded`,
         success: true,
-        description: pipeline.feeds.includes('Sales overview') ? 'Sales overview is up to date.' : 'Data is up to date.',
+        // Only this pipeline's data is fresh; another one feeding the same dashboard may still be broken.
+        description: pipeline.feeds.includes('Sales overview') ? 'Its charts on Sales overview are up to date.' : 'Data is up to date.',
         action: pipeline.feeds.includes('Sales overview')
           ? { label: 'View dashboard', onClick: () => navigate('/dashboard') }
           : undefined,
@@ -264,5 +262,5 @@ function useCompletionToast(pipeline) {
       const step = pipeline.steps.find((s) => s.status === 'failed')
       notify({ title: `${pipeline.name} failed again`, description: step?.error?.summary ?? 'A step failed.' })
     }
-  }, [pipeline, navigate])
+  }, [pipeline, navigate, epoch])
 }
