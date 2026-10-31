@@ -88,6 +88,13 @@
   }
 }
 
+/* A running pipeline's connector: dashes flow toward the next step. */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -11;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

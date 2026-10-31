@@ -94,7 +94,7 @@ export const PIPELINES = [
     lastRun: { startedAt: at(0, '06:00'), finishedAt: at(0, '06:04'), status: 'failed', trigger: 'schedule' },
     lastSuccessAt: at(-1, '06:05'),
     nextRunAt: at(1, '06:00'),
-    feeds: ['Q3 sales overview', 'Chat answers about revenue'],
+    feeds: ['Sales overview', 'Chat answers about revenue'],
     steps: [
       step({
         id: 'targets',
@@ -193,7 +193,7 @@ export const PIPELINES = [
         id: 'publish',
         kind: 'publish',
         name: 'Publish to dashboard',
-        target: 'Q3 sales overview',
+        target: 'Sales overview',
         inputs: ['variance'],
         status: 'waiting',
         healthy: { rowsIn: 15, rowsOut: 15, durationMs: 1100 },
@@ -221,7 +221,7 @@ export const PIPELINES = [
     lastRun: { startedAt: at(0, '09:02'), finishedAt: null, status: 'running', trigger: 'schedule' },
     lastSuccessAt: at(0, '08:04'),
     nextRunAt: at(0, '10:02'),
-    feeds: ['Q3 sales overview'],
+    feeds: ['Sales overview'],
     steps: [
       step({
         id: 'snapshots',
@@ -247,6 +247,7 @@ export const PIPELINES = [
         inputs: ['snapshots', 'products'],
         status: 'running',
         rowsIn: 96214,
+        healthy: { rowsIn: 96214, rowsOut: 96214, durationMs: 6100 },
       }),
       step({
         id: 'cover',
@@ -255,14 +256,16 @@ export const PIPELINES = [
         target: 'stock ÷ average weekly sales',
         inputs: ['match-products'],
         status: 'waiting',
+        healthy: { rowsIn: 96214, rowsOut: 4870, durationMs: 2400 }, // one row per product
       }),
       step({
         id: 'publish',
         kind: 'publish',
         name: 'Publish to dashboard',
-        target: 'Q3 sales overview',
+        target: 'Sales overview',
         inputs: ['cover'],
         status: 'waiting',
+        healthy: { rowsIn: 4870, rowsOut: 4870, durationMs: 800 },
       }),
     ],
     runs: [
@@ -281,7 +284,7 @@ export const PIPELINES = [
     lastRun: { startedAt: at(0, '07:30'), finishedAt: at(0, '07:33'), status: 'succeeded', trigger: 'schedule' },
     lastSuccessAt: at(0, '07:33'),
     nextRunAt: at(1, '07:30'),
-    feeds: ['Q3 sales overview'],
+    feeds: ['Sales overview'],
     steps: [
       step({
         id: 'returns-file',
@@ -334,7 +337,7 @@ export const PIPELINES = [
         id: 'publish',
         kind: 'publish',
         name: 'Publish to dashboard',
-        target: 'Q3 sales overview',
+        target: 'Sales overview',
         inputs: ['summarise'],
         rowsIn: 5,
         rowsOut: 5,

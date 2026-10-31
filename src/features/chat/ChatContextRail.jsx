@@ -23,7 +23,7 @@ export default function ChatContextRail() {
         <h2 className="text-sm font-semibold">Pinned to dashboard</h2>
         {state.pins.length === 0 ? (
           <p className="mt-2 text-sm text-ink-muted">
-            Pin an answer to keep it on the Q3 sales overview, where it refreshes with its pipeline.
+            Pin an answer to keep it on the Sales overview dashboard, where it refreshes with its pipeline.
           </p>
         ) : (
           <ul className="mt-3 space-y-2">

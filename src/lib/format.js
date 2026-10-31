@@ -28,6 +28,10 @@ export function formatCurrencyCompact(value) {
 }
 export const formatNumber = (value) => number.format(value)
 
+// Row counts on the narrow connectors of the desktop pipeline diagram: 638.9K, 195.4K, 15
+const compactNumber = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 })
+export const formatCompactNumber = (value) => compactNumber.format(value)
+
 // 0.0412 -> "4.1%"; signed adds a + for growth
 export function formatPercent(ratio, { signed = false, digits = 1 } = {}) {
   const text = `${(Math.abs(ratio) * 100).toFixed(digits)}%`
